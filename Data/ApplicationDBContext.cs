@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using CreditRiskAnalysisApp.Models;
+using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CreditRiskAnalysisApp.Data // Ensure this matches your project's namespace
@@ -9,7 +10,14 @@ namespace CreditRiskAnalysisApp.Data // Ensure this matches your project's names
             : base(options) { }
 
         // Add DbSet properties for your models
-        
-        //public DbSet<User> Users { get; set; }
+
+        public DbSet<Company> Companies { get; set; }
+
+        public DbSet<CompanyFinancial> CompanyFinancials { get; set; }
+
+        public DbSet<UploadFinancialStatement> FinancialDocuments { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
     }
 }
