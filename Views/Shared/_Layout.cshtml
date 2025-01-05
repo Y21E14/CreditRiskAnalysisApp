@@ -6,55 +6,81 @@
     <title>@ViewData["Title"] - Credit Risk Analysis Application</title>
 
     <!-- Styles -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CreditRiskAnalysisApp.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/site.css" asp-append-version="true" rel="stylesheet" />
 
-    <!-- Inline Styles (Background) -->
-    <!-- <style>
+    <style>
         body {
-            background: url('@(Url.Content("~/images/rp-20.jpg"))') no-repeat center center fixed;
-            background-size: cover;
-            font-size: small;
+            display: flex;
+            height: 100vh; /* Full viewport height */
+            margin: 0;
+            overflow: hidden; /* Prevent unnecessary scrollbars */
         }
-    </style>-->
+
+        /* Sidebar styles */
+        .sidebar {
+            background-color: #342a40; /* Dark grey */
+            color: white;
+            width: 250px;
+            padding: 15px 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%; /* full height side bar */
+        }
+
+            .sidebar a {
+                color: white;
+                text-decoration: none;
+                padding: 10px 20px;
+                display: block;
+            }
+
+                .sidebar a:hover {
+                    background-color: #495057; /* Lighter grey on hover */
+                }
+
+            .sidebar .active {
+                background-color: #28a745; /* Green for active item */
+                font-weight: bold;
+            }
+
+            /* Content area */
+            .content {
+                flex: 1;
+                padding: 20px;
+                overflow-y: auto;
+            }
+
+    
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-dark ps-2 fw-bold" style="background-color: darkgreen;">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CreditRiskAnalysisApp</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CreditRiskAnalysisApp</a>
+        <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+        <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "FinancialDocuments" && ViewContext.RouteData.Values["action"]?.ToString() == "Upload" ? "active" : "")" asp-area="" asp-controller="FinancialDocuments" asp-action="Upload">Upload Financial Statements</a>
+        <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "AnalysisForm" && ViewContext.RouteData.Values["action"]?.ToString() == "InputForm" ? "active" : "")" asp-area="" asp-controller="AnalysisForm" asp-action="InputForm">Analysis Form</a>
+    </div>
+
+
+
+    <!-- Main Content -->
+    <div class="content">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
+    <!-- Footer -->
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - CreditRiskAnalysisApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - CreditRiskAnalysisApp - <a href="~/Privacy">Privacy</a>
         </div>
     </footer>
+
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
