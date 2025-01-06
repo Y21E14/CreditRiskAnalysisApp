@@ -6,22 +6,29 @@ namespace CreditRiskAnalysisApp.Models
     public class UploadFinancialStatement
     {
         [Key]
+        // 'Id' is the primary key for the 'UploadFinancialStatement' table in the database
         public int Id { get; set; }
 
         [Required]
-        public string FileName { get; set; } // Name of the file
+        // store the name of the uploaded file
+        public string FileName { get; set; }
 
         [Required]
-        public string FilePath { get; set; } // Path where the file is stored
+        // store the full path where the file is saved on the server
+        public string FilePath { get; set; } 
 
         [Required]
-        public string FileType { get; set; } // File type (e.g., .pdf, .docx)
+        // stores the type or extension of the file (eg. '.pdf', '.docx')
+        public string FileType { get; set; }
 
+        // captures the date and time when the file was uploaded
         public DateTime UploadedAt { get; set; } = DateTime.Now;
 
+        // stores the foreign key value linking this financial statement
         public int CompanyId { get; set; }
 
         [ForeignKey("CompanyId")]
+        // Defines a relationship to the 'Company' entity
         public Company Company { get; set; } // Navigation property
     }
 }
