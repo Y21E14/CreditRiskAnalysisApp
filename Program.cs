@@ -7,7 +7,9 @@ builder.Services.AddControllersWithViews();
 
 // Register the database context with the connection string
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+        sqlServerOptions => sqlServerOptions.EnableRetryOnFailure())
+);
 
 var app = builder.Build();
 
