@@ -1,0 +1,31 @@
+﻿@model IEnumerable<CreditRiskAnalysisApp.Models.Company>
+
+<h1>Manage Companies</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Registration Number</th>
+            <th>Sector</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @foreach (var company in Model)
+        {
+            <tr>
+                <td>@company.Name</td>
+                <td>@company.RegistrationNumber</td>
+                <td>@company.Sector</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@company.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@company.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Create New Company</a>

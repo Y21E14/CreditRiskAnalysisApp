@@ -13,6 +13,7 @@ namespace CreditRiskAnalysisApp.Data // Ensure this matches your project's names
 
         public DbSet<Company> Companies { get; set; }
 
+
         public DbSet<CompanyFinancial> CompanyFinancials { get; set; }
 
         public DbSet<UploadFinancialStatement> FinancialDocuments { get; set; }

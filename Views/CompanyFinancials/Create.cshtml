@@ -1,0 +1,45 @@
+﻿@model CreditRiskAnalysisApp.Models.CompanyFinancial
+
+@{
+    ViewData["Title"] = "Create Company Financial Record";
+}
+
+<h1>Create Company Financial Record</h1>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group">
+        <label asp-for="Revenue" class="control-label"></label>
+        <input asp-for="Revenue" class="form-control" />
+        <span asp-validation-for="Revenue" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Expenses" class="control-label"></label>
+        <input asp-for="Expenses" class="form-control" />
+        <span asp-validation-for="Expenses" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Profit" class="control-label"></label>
+        <input asp-for="Profit" class="form-control" />
+        <span asp-validation-for="Profit" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CompanyId" class="control-label">Select Company</label>
+        <select asp-for="CompanyId" class="form-control" asp-items="ViewBag.CompanyId">
+            <option value="">-- Select Company --</option>
+        </select>
+        <span asp-validation-for="CompanyId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
