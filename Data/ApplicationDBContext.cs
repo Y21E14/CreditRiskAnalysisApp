@@ -21,5 +21,8 @@ namespace CreditRiskAnalysisApp.Data // Ensure this matches your project's names
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Status> Statuses { get; set; }
+
+
     }
 }
