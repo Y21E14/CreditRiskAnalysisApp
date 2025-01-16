@@ -1,0 +1,31 @@
+﻿@model CreditRiskAnalysisApp.Models.Company
+
+<h2>Financial Statements for @Model.Name</h2>
+
+<a asp-action="Upload" asp-route-id="@Model.Id" class="btn btn-primary mb-3">Upload Financial Statement</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Uploaded At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var statement in Model.FinancialStatements)
+        {
+            <tr>
+                <td>@statement.FileName</td>
+                <td>@statement.UploadedAt.ToString("g")</td>
+                <td>
+                    <a asp-action="DownloadFinancialStatement" asp-route-id="@statement.FileId" class="btn btn-success btn-sm">Download</a>
+                    <a asp-action="EditFinancialStatement" asp-route-id="@statement.FileId" class="btn btn-warning btn-sm">Edit</a>
+                    <a asp-action="DeleteFinancialStatement" asp-route-id="@statement.FileId" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Back to List of Companies</a>

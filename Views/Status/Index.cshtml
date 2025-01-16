@@ -1,0 +1,48 @@
+﻿@model IEnumerable<CreditRiskAnalysisApp.Models.Company>
+
+<h1>Loan Status</h1>
+
+<!-- Success Message -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<a asp-action="ExportLoanStatusToCSV" asp-controller="Status" class="btn btn-success mb-2">
+    Export Loan Status to CSV
+</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>UEN</th>
+            <th>Loan Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var company in Model)
+        {
+            <tr>
+                <td>@company.Name</td>
+                <td>@company.UEN</td>
+                <td>
+                    <form asp-action="UpdateLoanStatus" asp-controller="Status" method="post">
+                        <input type="hidden" name="id" value="@company.Id" />
+                        <select name="loanStatus" asp-items="ViewBag.LoanStatusList" class="form-control">
+                            <option selected="selected">@company.LoanStatus</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Update</button>
+                    </form>
+                </td>
+                <td>
+                    <a asp-action="ViewFinancialStatements" asp-controller="Company" asp-route-companyId="@company.Id" class="btn btn-primary btn-sm mt-1">View Financials</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

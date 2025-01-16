@@ -1,0 +1,13 @@
+﻿@model CreditRiskAnalysisApp.Models.FinancialStatement
+
+<h2>Delete Financial Statement</h2>
+
+<div class="alert alert-warning">
+    <p>Are you sure you want to delete the file <strong>@Model.FileName</strong>?</p>
+</div>
+
+<form asp-action="DeleteFinancialStatement" method="post">
+    <input type="hidden" asp-for="FileId" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="ViewFinancialStatements" asp-route-companyId="@Model.CompanyId" class="btn btn-secondary">Cancel</a>
+</form>

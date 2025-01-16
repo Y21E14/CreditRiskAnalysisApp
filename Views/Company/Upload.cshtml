@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Upload Financial Statement";
+}
+
+<h2>Upload Financial Statement for @ViewBag.CompanyName</h2>
+
+<form asp-action="Upload" asp-controller="Company" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="companyId" value="@ViewBag.CompanyId" />
+
+    <div class="form-group">
+        <label>Select File</label>
+        <input type="file" name="file" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">@ViewBag.Message</div>
+}

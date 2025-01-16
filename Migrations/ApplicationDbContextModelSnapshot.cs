@@ -57,51 +57,52 @@ namespace CreditRiskAnalysisApp.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("LoanStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("RegistrationNumber")
+                    b.Property<string>("UEN")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Sector")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("CreditRiskAnalysisApp.Models.CompanyFinancial", b =>
+            modelBuilder.Entity("CreditRiskAnalysisApp.Models.FinancialStatement", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("FileId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FileId"));
 
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Expenses")
-                        .HasColumnType("float");
+                    b.Property<byte[]>("FileContent")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<double>("Profit")
-                        .HasColumnType("float");
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Revenue")
-                        .HasColumnType("float");
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.HasKey("FileId");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyFinancials");
+                    b.ToTable("FinancialStatements");
                 });
 
             modelBuilder.Entity("CreditRiskAnalysisApp.Models.Status", b =>
@@ -125,39 +126,6 @@ namespace CreditRiskAnalysisApp.Migrations
                     b.ToTable("Statuses");
                 });
 
-            modelBuilder.Entity("CreditRiskAnalysisApp.Models.UploadFinancialStatement", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("FinancialDocuments");
-                });
-
             modelBuilder.Entity("CreditRiskAnalysisApp.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -170,7 +138,12 @@ namespace CreditRiskAnalysisApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("NRIC")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -180,21 +153,10 @@ namespace CreditRiskAnalysisApp.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CreditRiskAnalysisApp.Models.CompanyFinancial", b =>
-                {
-                    b.HasOne("CreditRiskAnalysisApp.Models.Company", "company")
-                        .WithMany("Financials")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("company");
-                });
-
-            modelBuilder.Entity("CreditRiskAnalysisApp.Models.UploadFinancialStatement", b =>
+            modelBuilder.Entity("CreditRiskAnalysisApp.Models.FinancialStatement", b =>
                 {
                     b.HasOne("CreditRiskAnalysisApp.Models.Company", "Company")
-                        .WithMany()
+                        .WithMany("FinancialStatements")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -204,7 +166,7 @@ namespace CreditRiskAnalysisApp.Migrations
 
             modelBuilder.Entity("CreditRiskAnalysisApp.Models.Company", b =>
                 {
-                    b.Navigation("Financials");
+                    b.Navigation("FinancialStatements");
                 });
 #pragma warning restore 612, 618
         }

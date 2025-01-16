@@ -1,0 +1,25 @@
+﻿@model CreditRiskAnalysisApp.Models.FinancialStatement
+
+<h2>Edit Financial Statement for @ViewBag.CompanyName</h2>
+
+<form asp-action="EditFinancialStatement" asp-controller="Company" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="FileId" />
+
+    <div class="form-group">
+        <label>Current File:</label>
+        <p>@Model.FileName</p>
+    </div>
+
+    <div class="form-group">
+        <label>Upload New File</label>
+        <input type="file" name="newFile" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update File</button>
+    <a asp-action="ViewFinancialStatements" asp-route-companyId="@Model.CompanyId" class="btn btn-secondary">Cancel</a>
+</form>
+
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-warning">@ViewBag.Message</div>
+}
