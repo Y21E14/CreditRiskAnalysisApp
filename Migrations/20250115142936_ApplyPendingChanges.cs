@@ -6,55 +6,62 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CreditRiskAnalysisApp.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class ApplyPendingChanges : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "AnalysisInputs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreditScore = table.Column<int>(type: "int", nullable: false),
-                    InputName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AnalysisInputs", x => x.Id);
-                });
+            migrationBuilder.DropTable(
+                name: "CompanyFinancials");
+
+            migrationBuilder.DropTable(
+                name: "FinancialDocuments");
+
+            migrationBuilder.DropColumn(
+                name: "Sector",
+                table: "Companies");
 
             migrationBuilder.CreateTable(
-                name: "Companies",
+                name: "FinancialStatements",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    UEN = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Sector = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FileContent = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    UploadedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Companies", x => x.Id);
+                    table.PrimaryKey("PK_FinancialStatements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FinancialStatements_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
+            migrationBuilder.CreateIndex(
+                name: "IX_FinancialStatements_CompanyId",
+                table: "FinancialStatements",
+                column: "CompanyId");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "FinancialStatements");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Sector",
+                table: "Companies",
+                type: "nvarchar(100)",
+                maxLength: 100,
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.CreateTable(
                 name: "CompanyFinancials",
@@ -62,10 +69,10 @@ namespace CreditRiskAnalysisApp.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Revenue = table.Column<double>(type: "float", nullable: false),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
                     Expenses = table.Column<double>(type: "float", nullable: false),
                     Profit = table.Column<double>(type: "float", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                    Revenue = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,11 +91,11 @@ namespace CreditRiskAnalysisApp.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyId = table.Column<int>(type: "int", nullable: false),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UploadedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                    UploadedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,25 +117,6 @@ namespace CreditRiskAnalysisApp.Migrations
                 name: "IX_FinancialDocuments_CompanyId",
                 table: "FinancialDocuments",
                 column: "CompanyId");
-        }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "AnalysisInputs");
-
-            migrationBuilder.DropTable(
-                name: "CompanyFinancials");
-
-            migrationBuilder.DropTable(
-                name: "FinancialDocuments");
-
-            migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Companies");
         }
     }
 }

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using CreditRiskAnalysisApp.Data; // For ApplicationDbContext
 using CreditRiskAnalysisApp.Models; // For the User model
+using System.Text;
+using System.Linq;
 
 namespace CreditRiskAnalysisApp.Controllers
 {
@@ -20,60 +22,63 @@ namespace CreditRiskAnalysisApp.Controllers
             return View(users);
         }
 
+        // GET: Create User
         public IActionResult Create()
         {
             return View();
         }
 
+        // POST: Create User
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(User user)
         {
             if (ModelState.IsValid)
             {
                 _context.Users.Add(user);
                 _context.SaveChanges();
+                TempData["SuccessMessage"] = "User created successfully!";
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
         }
 
+        // GET: Edit User
         public IActionResult Edit(int id)
         {
             var user = _context.Users.Find(id);
-            if (user == null) return NotFound();
+            if (user == null)
+                return NotFound();
+
             return View(user);
         }
 
+        // POST: Edit User
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(User user)
         {
             if (ModelState.IsValid)
             {
                 _context.Users.Update(user);
                 _context.SaveChanges();
+                TempData["SuccessMessage"] = "User updated successfully!";
                 return RedirectToAction(nameof(Index));
             }
             return View(user);
         }
 
-        // GET: User/Delete/5
-        public IActionResult Delete(int? id)
+        // GET: Delete User
+        public IActionResult Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var user = _context.Users.Find(id);
             if (user == null)
-            {
                 return NotFound();
-            }
 
             return View(user);
         }
 
-        // POST: User/Delete/5
+        // POST: Delete User
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -83,9 +88,28 @@ namespace CreditRiskAnalysisApp.Controllers
             {
                 _context.Users.Remove(user);
                 _context.SaveChanges();
+                TempData["SuccessMessage"] = "User deleted successfully!";
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // Export Users to CSV
+        public IActionResult ExportUsersToCSV()
+        {
+            var users = _context.Users.ToList();
+
+            var csvBuilder = new StringBuilder();
+            csvBuilder.AppendLine("Name,NRIC,Email");
+
+            foreach (var user in users)
+            {
+                csvBuilder.AppendLine($"{user.Name},{user.NRIC},{user.Email}");
+            }
+
+            byte[] buffer = Encoding.UTF8.GetBytes(csvBuilder.ToString());
+            return File(buffer, "text/csv", "Users.csv");
         }
     }
 }

@@ -3,32 +3,29 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CreditRiskAnalysisApp.Models
 {
-    public class UploadFinancialStatement
+    public class FinancialStatement
     {
         [Key]
         // 'Id' is the primary key for the 'UploadFinancialStatement' table in the database
-        public int Id { get; set; }
+        public int FileId { get; set; }
 
         [Required]
         // store the name of the uploaded file
-        public string FileName { get; set; }
+        public string FileName { get; set; } = string.Empty;
 
         [Required]
         // store the full path where the file is saved on the server
-        public string FilePath { get; set; } 
+        public byte[] FileContent { get; set; } = Array.Empty<byte>();
 
         [Required]
-        // stores the type or extension of the file (eg. '.pdf', '.docx')
-        public string FileType { get; set; }
-
         // captures the date and time when the file was uploaded
         public DateTime UploadedAt { get; set; } = DateTime.Now;
 
+        [ForeignKey("Company")]
         // stores the foreign key value linking this financial statement
         public int CompanyId { get; set; }
 
-        [ForeignKey("CompanyId")]
         // Defines a relationship to the 'Company' entity
-        public Company Company { get; set; } // Navigation property
+        public Company Company { get; set; } = null!; // Navigation property
     }
 }

@@ -9,18 +9,19 @@ namespace CreditRiskAnalysisApp.Models
 
         [Required(ErrorMessage = "Company name is required.")]
         [StringLength(100, ErrorMessage = "Company name cannot exceed 100 characters.")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Registration number is required.")]
+        [Required(ErrorMessage = "UEN number is required.")]
         [StringLength(50)]
-        public string RegistrationNumber { get; set; }
+        public string UEN { get; set; } = string.Empty;
 
-        [StringLength(100, ErrorMessage = "Sector cannot exceed 100 characters.")]
-        public string Sector { get; set; }
+        // Loan Status: Draft, Approved, Expired
+        [Required]
+        [Display(Name = "Loan Status")]
+        public string LoanStatus { get; set; } = "Draft";
 
-        // Navigation property for related financial data
-        public ICollection<CompanyFinancial> Financials { get; set; } = 
-            new List<CompanyFinancial>();
+        public ICollection<FinancialStatement> FinancialStatements { get; set; } = new List<FinancialStatement>();
+
     }
 }
 

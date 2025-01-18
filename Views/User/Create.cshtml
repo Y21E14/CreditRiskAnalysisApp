@@ -1,15 +1,20 @@
 ﻿@model CreditRiskAnalysisApp.Models.User
 
-<h1>Create User</h1>
+<h2>Create New User</h2>
 
-<form asp-action="Create">
-    <div class="mb-3">
-        <label for="Username" class="form-label">Username</label>
-        <input type="text" id="Username" name="Username" class="form-control" />
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" required />
     </div>
-    <div class="mb-3">
-        <label for="Email" class="form-label">Email</label>
-        <input type="email" id="Email" name="Email" class="form-control" />
+    <div class="form-group">
+        <label>NRIC</label>
+        <input asp-for="NRIC" class="form-control" required />
     </div>
-    <button type="submit" class="btn btn-primary">Create</button>
+    <div class="form-group">
+        <label>Email</label>
+        <input asp-for="Email" class="form-control" required type="email" />
+    </div>
+    <button type="submit" class="btn btn-success mt-1">Create</button>
+    <a asp-action="Index" class="btn btn-secondary mt-1">Cancel</a>
 </form>

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CreditRiskAnalysisApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250112174053_AddCompanyFinancialTable")]
-    partial class AddCompanyFinancialTable
+    [Migration("20250113105200_CreateUsersTable")]
+    partial class CreateUsersTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,7 +65,8 @@ namespace CreditRiskAnalysisApp.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("UEN")
+                    b.Property<string>("UEN" +
+                        "")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -105,6 +106,27 @@ namespace CreditRiskAnalysisApp.Migrations
                     b.HasIndex("CompanyId");
 
                     b.ToTable("CompanyFinancials");
+                });
+
+            modelBuilder.Entity("CreditRiskAnalysisApp.Models.Status", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CurrentStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("CreditRiskAnalysisApp.Models.UploadFinancialStatement", b =>
@@ -164,13 +186,13 @@ namespace CreditRiskAnalysisApp.Migrations
 
             modelBuilder.Entity("CreditRiskAnalysisApp.Models.CompanyFinancial", b =>
                 {
-                    b.HasOne("CreditRiskAnalysisApp.Models.Company", "Company")
+                    b.HasOne("CreditRiskAnalysisApp.Models.Company", "company")
                         .WithMany("Financials")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Company");
+                    b.Navigation("company");
                 });
 
             modelBuilder.Entity("CreditRiskAnalysisApp.Models.UploadFinancialStatement", b =>

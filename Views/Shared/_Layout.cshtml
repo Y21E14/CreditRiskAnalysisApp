@@ -58,12 +58,11 @@
    <div class="sidebar">
     <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CreditRiskAnalysisApp</a>
     <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-    <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "FinancialDocuments" && ViewContext.RouteData.Values["action"]?.ToString() == "Upload" ? "active" : "")" asp-area="" asp-controller="FinancialDocuments" asp-action="Upload">Upload Financial Statements</a>
     <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "AnalysisForm" && ViewContext.RouteData.Values["action"]?.ToString() == "InputForm" ? "active" : "")" asp-area="" asp-controller="AnalysisForm" asp-action="InputForm">Analysis Form</a>
     <hr /> <!-- Separator for better organization -->
         <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "User" ? "active" : "")" asp-controller="User" asp-action="Index">Manage Users</a>
         <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Company" ? "active" : "")" asp-area="" asp-controller="Company" asp-action="Index">Manage Companies</a>
-    <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "CompanyFinancials" ? "active" : "")" asp-area="" asp-controller="CompanyFinancials" asp-action="Index">Manage Company Financials</a>
+    <a class="nav-link text-white @(ViewContext.RouteData.Values["controller"]?.ToString() == "Status" ? "active" : "")" asp-area="" asp-controller="Status" asp-action="Index">Manage Loan Status</a>
 
 
 </div>

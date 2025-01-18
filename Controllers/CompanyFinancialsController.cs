@@ -22,7 +22,7 @@ namespace CreditRiskAnalysisApp.Controllers
         // GET: CompanyFinancials
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.CompanyFinancials.Include(c => c.company);
+            var applicationDbContext = _context.FinancialStatements.Include(c => c.FileName);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -34,9 +34,9 @@ namespace CreditRiskAnalysisApp.Controllers
                 return NotFound();
             }
 
-            var companyFinancial = await _context.CompanyFinancials
-                .Include(c => c.company)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var companyFinancial = await _context.FinancialStatements
+                .Include(c => c.FileName)
+                .FirstOrDefaultAsync(m => m.FileId == id);
             if (companyFinancial == null)
             {
                 return NotFound();
@@ -79,7 +79,7 @@ namespace CreditRiskAnalysisApp.Controllers
                 return NotFound();
             }
 
-            var companyFinancial = await _context.CompanyFinancials.FindAsync(id);
+            var companyFinancial = await _context.FinancialStatements.FindAsync(id);
             if (companyFinancial == null)
             {
                 return NotFound();
@@ -132,9 +132,9 @@ namespace CreditRiskAnalysisApp.Controllers
                 return NotFound();
             }
 
-            var companyFinancial = await _context.CompanyFinancials
-                .Include(c => c.company)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var companyFinancial = await _context.FinancialStatements
+                .Include(c => c.FileName)
+                .FirstOrDefaultAsync(m => m.FileId == id);
             if (companyFinancial == null)
             {
                 return NotFound();
@@ -148,10 +148,10 @@ namespace CreditRiskAnalysisApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var companyFinancial = await _context.CompanyFinancials.FindAsync(id);
+            var companyFinancial = await _context.FinancialStatements.FindAsync(id);
             if (companyFinancial != null)
             {
-                _context.CompanyFinancials.Remove(companyFinancial);
+                _context.FinancialStatements.Remove(companyFinancial);
             }
 
             await _context.SaveChangesAsync();
@@ -160,7 +160,7 @@ namespace CreditRiskAnalysisApp.Controllers
 
         private bool CompanyFinancialExists(int id)
         {
-            return _context.CompanyFinancials.Any(e => e.Id == id);
+            return _context.FinancialStatements.Any(e => e.FileId == id);
         }
     }
 }
