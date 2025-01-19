@@ -1,78 +1,162 @@
-import pandas as pd
 import numpy as np
-from sklearn.model_selection import StratifiedKFold
-from sklearn.preprocessing import LabelEncoder
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from xgboost import XGBClassifier
+import pandas as pd
+from joblib import load
 
-# Step 1: Load the dataset
-file_path = "fake_credit_rating_data.csv"
-data = pd.read_csv(file_path)
+# Backend calculation functions (calculations performed on user input data)
+# Calculates the Debt to Equity Ratio
+def calculate_debt_to_equity_ratio(total_long_term_debt, total_debt_current_liabilities, total_stockholders_equity):
+    return (total_long_term_debt - total_debt_current_liabilities) / total_stockholders_equity
 
-# Step 2: Preprocess the data
-# Define features (X) and target (y)
-X = data.drop(columns=["Rating level"])
-y = data["Rating level"]
+# Calculates Net Cash Flow from operating and financing activities
+def calculate_net_cash_flow(operating_activities, financing_activities):
+    return operating_activities + financing_activities
 
-# Encode the target labels
-y_encoded = LabelEncoder().fit_transform(y)
+# Calculates Gross Profit Margin as a percentage
+def calculate_gross_profit_margin(gross_profit_loss, total_revenue):
+    return (gross_profit_loss / total_revenue) * 100
 
-# Step 3: Set up cross-validation
-num_folds = 5
-skf = StratifiedKFold(n_splits=num_folds, shuffle=True, random_state=42)
+# Calculates Earnings Before Interest (EBTI) to Total Asset ratio
+def calculate_ebti_total_asset(earnings_before_interest, total_asset):
+    return earnings_before_interest / total_asset
 
-# Store results
-train_accuracies = []
-test_accuracies = []
-all_y_test = []
-all_y_test_pred = []
+# Calculates Earnings Before Interest (EBTI) to Revenue ratio
+def calculate_ebti_revenue(earnings_before_interest, total_revenue):
+    return earnings_before_interest / total_revenue
 
-# Step 4: Train and test the model using cross-validation
-for train_idx, test_idx in skf.split(X, y_encoded):
-    # Split data into training and testing sets
-    X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
-    y_train, y_test = y_encoded[train_idx], y_encoded[test_idx]
+# Calculates Total Stockholders' Equity
+def calculate_total_stockholders_equity(total_asset, total_liabilities):
+    return total_asset - total_liabilities
 
-    # Define the XGBoost model
-    model = XGBClassifier(
-        max_depth=3,
-        learning_rate=0.1,
-        n_estimators=100,
-        random_state=42,
-        objective='multi:softmax'
-    )
+# Calculates the Working Capital Ratio
+def calculate_working_capital_ratio(total_asset, cash, total_inventories, total_long_term_debt, total_debt_current_liabilities):
+    return (total_asset - (cash + total_inventories)) / (total_long_term_debt - total_debt_current_liabilities)
 
-    # Train the model
-    model.fit(X_train, y_train)
+# Calculates Debt Service Coverage Ratio
+def calculate_debt_service_coverage_ratio(earnings_before_interest, total_long_term_debt, total_debt_current_liabilities):
+    return earnings_before_interest / (total_long_term_debt + total_debt_current_liabilities)
 
-    # Evaluate on training data
-    y_train_pred = model.predict(X_train)
-    train_accuracies.append(accuracy_score(y_train, y_train_pred))
+# Generate test data to simulate user inputs
+test_data = pd.DataFrame({
+    "Total Asset": [1000],                   
+    "Cash": [50],                           
+    "Total Debt in Current Liabilities": [900], 
+    "Total Long - Term Debt": [2000],            
+    "Earnings Before Interest (optional)": [50], 
+    "Gross Profit (Loss)": [100],            
+    "Total Liabilities": [2900],                 
+    "Retained Earnings": [-500],             
+    "Total Stockholders Equity": [-1900],      
+    "Total Interest and Related Expense": [200], 
+    "Total Market Value (optional)": [1500], 
+    "Total Inventories": [50],               
+    "Total Revenue": [1000],                 
+    "Operating Activities - Net Cash Flow": [-100], 
+    "Financing Activities - Net Cash Flow": [-50]   
+})
 
-    # Evaluate on testing data
-    y_test_pred = model.predict(X_test)
-    test_accuracies.append(accuracy_score(y_test, y_test_pred))
+# Perform backend calculations based on the test data
 
-    # Store predictions for aggregated metrics
-    all_y_test.extend(y_test)
-    all_y_test_pred.extend(y_test_pred)
+# Calculate Net Cash Flow
+test_data["Net Cash Flow"] = calculate_net_cash_flow(
+    test_data["Operating Activities - Net Cash Flow"].iloc[0], 
+    test_data["Financing Activities - Net Cash Flow"].iloc[0]
+)
 
-# Step 5: Calculate overall performance metrics
-print("Training Accuracy per Fold:", train_accuracies)
-print("Testing Accuracy per Fold:", test_accuracies)
-print(f"Average Training Accuracy: {np.mean(train_accuracies):.2f}")
-print(f"Average Testing Accuracy: {np.mean(test_accuracies):.2f}")
+# Calculate Gross Profit Margin
+test_data["Gross Profit Margin"] = calculate_gross_profit_margin(
+    test_data["Gross Profit (Loss)"].iloc[0],
+    test_data["Total Revenue"].iloc[0]
+)
 
-# Classification report
-print("\nClassification Report:")
-print(classification_report(all_y_test, all_y_test_pred, target_names=np.unique(y)))
+# Calculate Earnings Before Tax and Interest to Total Asset ratio
+test_data["EBTI/Total Asset"] = calculate_ebti_total_asset(
+    test_data["Earnings Before Interest (optional)"].iloc[0],
+    test_data["Total Asset"].iloc[0]
+)
 
-# Confusion matrix
-print("\nConfusion Matrix:")
-conf_matrix = confusion_matrix(all_y_test, all_y_test_pred)
-print(conf_matrix)
+# Calculate Earnings Before Tax and Interest to Revenue ratio
+test_data["EBTI/Revenue"] = calculate_ebti_revenue(
+    test_data["Earnings Before Interest (optional)"].iloc[0],
+    test_data["Total Revenue"].iloc[0]
+)
 
-# Display confusion matrix percentages
-conf_matrix_percentages = conf_matrix.astype('float') / conf_matrix.sum(axis=1)[:, np.newaxis] * 100
-print("\nConfusion Matrix (Percentages):")
-print(np.round(conf_matrix_percentages, 2))
+# Recalculate Total Stockholders' Equity
+test_data["Total Stockholders Equity"] = calculate_total_stockholders_equity(
+    test_data["Total Asset"].iloc[0],
+    test_data["Total Liabilities"].iloc[0]
+)
+
+# Calculate Debt to Equity Ratio
+test_data["Debt to Equity Ratio"] = calculate_debt_to_equity_ratio(
+    test_data["Total Long - Term Debt"].iloc[0],
+    test_data["Total Debt in Current Liabilities"].iloc[0],
+    test_data["Total Stockholders Equity"].iloc[0]
+)
+
+# Calculate Working Capital Ratio
+test_data["Working Capital Ratio"] = calculate_working_capital_ratio(
+    test_data["Total Asset"].iloc[0],
+    test_data["Cash"].iloc[0],
+    test_data["Total Inventories"].iloc[0],
+    test_data["Total Long - Term Debt"].iloc[0],
+    test_data["Total Debt in Current Liabilities"].iloc[0]
+)
+
+# Calculate Debt Service Coverage Ratio
+test_data["Debt Service Coverage Ratio"] = calculate_debt_service_coverage_ratio(
+    test_data["Earnings Before Interest (optional)"].iloc[0],
+    test_data["Total Long - Term Debt"].iloc[0],
+    test_data["Total Debt in Current Liabilities"].iloc[0]
+)
+
+# Print the test data after calculations
+print("\nTest Data with Calculated Fields:")
+print(test_data)
+
+# Load the trained model from the .joblib file
+# Use the absolute path for loading the model
+model = load("C:/Users/22043841/CreditRiskAnalysisApp-1/Python Codes/credit_risk_model.joblib")
+
+# Load the trained LabelEncoder
+# ADDED: Load the saved LabelEncoder to map numerical predictions to labels
+label_encoder = load("C:/Users/22043841/CreditRiskAnalysisApp-1/Python Codes/label_encoder.joblib")
+
+# Rename columns to match model training
+# Rename columns to align with the model's expected feature names
+test_data.rename(columns={
+    "Total Long - Term Debt": "Total Long-Term Debt",
+    "Earnings Before Interest (optional)": "Earnings Before Interest",
+    "Debt to Equity Ratio": "Debt-to-Equity Ratio"
+}, inplace=True)
+
+# Add missing features
+# Include 'Market Value - Total - Fiscal' in the missing features list
+for feature in ["Total debt/total asset", "Total asset/Total libiilities", "EBTI/total asset",
+                "Gross Profit/Revenue", "EBTI/REV", "Sales/Turnover (Net)", "Total Current Asset",
+                "Market Value - Total - Fiscal"]:  # Ensure all required features are included
+    if feature not in test_data.columns:
+        test_data[feature] = 0  # Placeholder values
+
+# Ensure only training features are used
+# Filter test_data to include only training features
+model_input = test_data[
+    ["Total Asset", "Cash", "Total Debt in Current Liabilities", "Total Long-Term Debt",
+     "Earnings Before Interest", "Gross Profit (Loss)", "Total Liabilities", "Retained Earnings",
+     "Total debt/total asset", "Total asset/Total libiilities", "EBTI/total asset",
+     "Gross Profit/Revenue", "EBTI/REV", "Sales/Turnover (Net)", "Total Stockholders Equity",
+     "Total Interest and Related Expense", "Market Value - Total - Fiscal", "Total Inventories",
+     "Operating Activities - Net Cash Flow", "Financing Activities - Net Cash Flow",
+     "Net Cash Flow", "Debt-to-Equity Ratio", "Total Current Asset", "Working Capital Ratio",
+     "Debt Service Coverage Ratio", "Gross Profit Margin"]
+]
+
+# Predict the risk rating using the trained model
+predicted_class = model.predict(model_input)
+
+# Map the numerical prediction to the corresponding label
+# Use LabelEncoder to decode the numerical prediction
+predicted_label = label_encoder.inverse_transform(predicted_class)
+
+# Output the predicted risk rating
+print(f"\nPredicted Risk Rating (Numerical): {predicted_class[0]}")
+print(f"Predicted Risk Rating (Label): {predicted_label[0]}")
