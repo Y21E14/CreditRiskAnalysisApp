@@ -116,11 +116,11 @@ print(test_data)
 
 # Load the trained model from the .joblib file
 # Use the absolute path for loading the model
-model = load("C:/Users/22043841/CreditRiskAnalysisApp-1/Python Codes/credit_risk_model.joblib")
+model = load("joblib/credit_risk_model.joblib")
 
 # Load the trained LabelEncoder
 # ADDED: Load the saved LabelEncoder to map numerical predictions to labels
-label_encoder = load("C:/Users/22043841/CreditRiskAnalysisApp-1/Python Codes/label_encoder.joblib")
+label_encoder = load("joblib/label_encoder.joblib")
 
 # Rename columns to match model training
 # Rename columns to align with the model's expected feature names
