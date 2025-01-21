@@ -6,8 +6,11 @@
 
 import pandas as pd
 import numpy as np
+import xgboost
 
-xg_df = pd.read_csv("Set B Corporate Rating - marketvalue3classes.csv") # to read the data from the csv
+#xg_df = pd.read_csv("Set B Corporate Rating - marketvalue3classes.csv") # to read the data from the csv
+xg_df = pd.read_csv(r"C:\FYP\CreditRiskAnalysisApp\Python Codes\Set B Corporate Rating - marketvalue3classes.csv")
+
 xg_df # to call
 
 # %%
@@ -59,7 +62,7 @@ X_filtered = xg_df.drop(columns=['Rating level'])
 y = xg_df['Rating level']
 
 # %%
-pip install xgboost
+
 
 # %%
 # parameter optimization loop
