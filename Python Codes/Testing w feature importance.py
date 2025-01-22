@@ -31,21 +31,21 @@ def calculate_debt_service_coverage_ratio(earnings_before_interest, total_long_t
 
 # Generate test data to simulate user inputs for Low, Moderate, and High Risk levels
 test_data = pd.DataFrame({
-  "Total Asset": [0],  # High value indicating financial stability
-    "Cash": [0],  # Strong cash position
-    "Total Debt in Current Liabilities": [0],  # Low short-term debt
-    "Total Long - Term Debt": [0],  # Low long-term debt
-    "Earnings Before Interest (optional)": [0],  # High earnings before interest
-    "Gross Profit (Loss)": [2000],  # High profitability
-    "Total Liabilities": [700],  # Low total liabilities
-    "Retained Earnings": [7000],  # High retained earnings (key feature)
-    "Total Stockholders Equity": [4300],  # High equity
-    "Total Interest and Related Expense": [100],  # Low interest expense
-    "Total Market Value (optional)": [8000],  # High market value (key feature)
-    "Total Inventories": [500],  # Moderate inventory level
-    "Total Revenue": [3000],  # High revenue
-    "Operating Activities - Net Cash Flow": [500],  # Positive cash flow
-    "Financing Activities - Net Cash Flow": [300]  # Positive financing activities
+   "Total Asset": [1000000],                    # Extremely high total assets
+    "Cash": [500000],                            # High cash reserves
+    "Total Debt in Current Liabilities": [10],   # Negligible short-term debt
+    "Total Long - Term Debt": [20],              # Negligible long-term debt
+    "Earnings Before Interest (optional)": [50000], # Very high earnings before interest
+    "Gross Profit (Loss)": [100000],             # Extremely high profitability
+    "Total Liabilities": [2900],                 # Low total liabilities
+    "Retained Earnings": [0],               # Very high retained earnings
+    "Total Stockholders Equity": [997100],       # High equity
+    "Total Interest and Related Expense": [200], # Minimal interest expense
+    "Total Market Value (optional)": [0],  # Very high market value
+    "Total Inventories": [500000],               # High inventory levels
+    "Total Revenue": [1000000],                  # Extremely high revenue
+    "Operating Activities - Net Cash Flow": [50000], # Strong positive operating cash flow
+    "Financing Activities - Net Cash Flow": [10000]  # Positive financing cash flow
 })
 
 # Perform backend calculations
