@@ -1,10 +1,39 @@
 import pandas as pd
 import numpy as np
+<<<<<<< HEAD
+import xgboost
 
 xg_df = pd.read_csv("Set B Corporate Rating - marketvalue3classes.csv") # to read the data from the csv
 xg_df # to call
 
 # %%
+# Step 2: Column Filter Node - remove unnecessary columns (axis=1 removes columns)
+xg_df= xg_df.drop(
+    # Include columns to remove here
+    ['Total Revenue'],  # Specify 'Total Revenue' for exclusion
+    axis=1, 
+    errors='ignore'  # Prevent errors if the column is not present
+)
+
+xg_df  # Display the filtered dataframe
+
+# %%
+#linear correlation
+import seaborn as sns
+=======
+from xgboost import XGBClassifier
+>>>>>>> 3f306bab755a210ee4390365f88264f481b33b13
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import StratifiedKFold, GridSearchCV  # UPDATED: Added GridSearchCV
+from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix, cohen_kappa_score
+from joblib import dump, load
+
+# Step 1: Read the dataset
+xg_df = pd.read_csv("Set B Corporate Rating - marketvalue3classes.csv")  # Load dataset
+xg_df  # Display dataset
+
 # Step 2: Column Filter Node - remove unnecessary columns (axis=1 removes columns)
 xg_df = xg_df.drop(
     ['Total Revenue'],  # Exclude irrelevant columns
@@ -27,7 +56,66 @@ plt.show()
 X_filtered = xg_df.drop(columns=['Rating level'])  # Features
 y = xg_df['Rating level']  # Target
 
+<<<<<<< HEAD
+# Define the target variable
+y = xg_df['Rating level']
+
+# %%
+
+
+# %%
+# parameter optimization loop
+# Define the range for sigma
+sigma_values = np.arange(0.3, 0.6 + 0.1, 0.1)  # Start, Stop (inclusive), Step
+print("Sigma values to evaluate:", sigma_values)
+
+# %%
+# Store the results
+results = []
+
+for sigma in sigma_values:
+    print(f"Training with sigma = {sigma}")
+    
+    # Define the model with sigma as the hyperparameter (example usage in 'subsample')
+    model = XGBClassifier(subsample=sigma, random_state=42)
+    
+    # Perform cross-validation (using StratifiedKFold from your earlier setup)
+    fold_accuracies = []
+    for train_index, test_index in skf.split(X_filtered, y_encoded):
+        X_train, X_test = X_filtered.iloc[train_index], X_filtered.iloc[test_index]
+        y_train, y_test = y_encoded[train_index], y_encoded[test_index]
+        
+        # Train the model
+        model.fit(X_train, y_train)
+        
+        # Make predictions
+        y_pred = model.predict(X_test)
+        
+        # Calculate accuracy
+        accuracy = accuracy_score(y_test, y_pred)
+        fold_accuracies.append(accuracy)
+    
+    # Store the average accuracy for this sigma
+    avg_accuracy = np.mean(fold_accuracies)
+    results.append((sigma, avg_accuracy))
+    print(f"Sigma = {sigma}, Average Accuracy = {avg_accuracy:.4f}")
+
+# Display the best sigma value
+best_sigma, best_accuracy = max(results, key=lambda x: x[1])
+print(f"\nBest Sigma: {best_sigma}, Best Average Accuracy: {best_accuracy:.4f}")
+
+# %%
+# x-partitioner and xgboost tree learner
+from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import accuracy_score
+from xgboost import XGBClassifier
+from sklearn.preprocessing import LabelEncoder
+import numpy as np
+
+# Step 1: Encode the target labels
+=======
 # Step 5: Encode the target labels
+>>>>>>> 3f306bab755a210ee4390365f88264f481b33b13
 label_encoder = LabelEncoder()
 y_encoded = label_encoder.fit_transform(y)
 

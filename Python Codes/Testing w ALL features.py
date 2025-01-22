@@ -1,3 +1,4 @@
+# TESTING OF ALL FEATURES
 
 import numpy as np
 import pandas as pd
@@ -38,21 +39,21 @@ def calculate_debt_service_coverage_ratio(earnings_before_interest, total_long_t
 
 # Generate test data to simulate user inputs
 test_data = pd.DataFrame({
-    "Total Asset": [1000],                   
-    "Cash": [50],                           
-    "Total Debt in Current Liabilities": [900], 
-    "Total Long - Term Debt": [2000],            
-    "Earnings Before Interest (optional)": [50], 
-    "Gross Profit (Loss)": [100],            
-    "Total Liabilities": [2900],                 
-    "Retained Earnings": [-500],             
-    "Total Stockholders Equity": [-1900],      
-    "Total Interest and Related Expense": [200], 
-    "Total Market Value (optional)": [1500], 
-    "Total Inventories": [50],               
-    "Total Revenue": [1000],                 
-    "Operating Activities - Net Cash Flow": [-100], 
-    "Financing Activities - Net Cash Flow": [-50]   
+    "Total Asset": [1000000],                    # Extremely high total assets
+    "Cash": [500000],                            # High cash reserves
+    "Total Debt in Current Liabilities": [10],   # Negligible short-term debt
+    "Total Long - Term Debt": [20],              # Negligible long-term debt
+    "Earnings Before Interest (optional)": [50000], # Very high earnings before interest
+    "Gross Profit (Loss)": [100000],             # Extremely high profitability
+    "Total Liabilities": [2900],                 # Low total liabilities
+    "Retained Earnings": [100000],               # Very high retained earnings
+    "Total Stockholders Equity": [997100],       # High equity
+    "Total Interest and Related Expense": [200], # Minimal interest expense
+    "Total Market Value (optional)": [1500000],  # Very high market value
+    "Total Inventories": [500000],               # High inventory levels
+    "Total Revenue": [1000000],                  # Extremely high revenue
+    "Operating Activities - Net Cash Flow": [50000], # Strong positive operating cash flow
+    "Financing Activities - Net Cash Flow": [10000]  # Positive financing cash flow
 })
 
 # Perform backend calculations based on the test data
