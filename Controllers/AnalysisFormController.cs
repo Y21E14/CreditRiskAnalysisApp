@@ -28,5 +28,18 @@ namespace CreditRiskAnalysisApp.Controllers
             ViewBag.Ratios = ratios;
             return View();
         }
+
+        [HttpPost]
+        public IActionResult Submit(AnalysisInput input)
+        {
+            if (!ModelState.IsValid)
+            {
+                // Return the form with validation errors
+                return View("InputForm", input);
+            }
+            // Proceed with processing valid input
+            return RedirectToAction("Success");
+        }
+
     }
 }

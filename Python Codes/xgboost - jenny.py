@@ -1,30 +1,6 @@
 import pandas as pd
 import numpy as np
-<<<<<<< HEAD
-import xgboost
-
-#xg_df = pd.read_csv("Set B Corporate Rating - marketvalue3classes.csv") # to read the data from the csv
-xg_df = pd.read_csv(r"C:\FYP\CreditRiskAnalysisApp\Python Codes\Set B Corporate Rating - marketvalue3classes.csv")
-
-xg_df # to call
-
-# %%
-# Step 2: Column Filter Node - remove unnecessary columns (axis=1 removes columns)
-xg_df= xg_df.drop(
-    # Include columns to remove here
-    ['Total Revenue'],  # Specify 'Total Revenue' for exclusion
-    axis=1, 
-    errors='ignore'  # Prevent errors if the column is not present
-)
-
-xg_df  # Display the filtered dataframe
-
-# %%
-#linear correlation
-import seaborn as sns
-=======
 from xgboost import XGBClassifier
->>>>>>> 3f306bab755a210ee4390365f88264f481b33b13
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import StratifiedKFold, GridSearchCV  # UPDATED: Added GridSearchCV
@@ -54,16 +30,15 @@ plt.xticks(rotation=90)
 plt.tight_layout()
 plt.show()
 
-# Step 4: Define features (X) and target variable (y)
-X_filtered = xg_df.drop(columns=['Rating level'])  # Features
-y = xg_df['Rating level']  # Target
+# %%
+# Define the feature matrix by dropping the target column
+X_filtered = xg_df.drop(columns=['Rating level'])
 
-<<<<<<< HEAD
 # Define the target variable
 y = xg_df['Rating level']
 
 # %%
-
+pip install xgboost
 
 # %%
 # parameter optimization loop
@@ -115,56 +90,11 @@ from sklearn.preprocessing import LabelEncoder
 import numpy as np
 
 # Step 1: Encode the target labels
-=======
-# Step 5: Encode the target labels
->>>>>>> 3f306bab755a210ee4390365f88264f481b33b13
 label_encoder = LabelEncoder()
-y_encoded = label_encoder.fit_transform(y)
+y_encoded = label_encoder.fit_transform(y)  # Encode 'High Risk', 'Low Risk', etc. to 0, 1, 2
 
-# Save the LabelEncoder for reuse
-dump(label_encoder, 'joblib/label_encoder.joblib')  # ADDED: Save LabelEncoder in the 'joblib' folder
-
-# Step 6: Parameter Optimization with GridSearchCV - UPDATED
-# Define parameter grid for optimization
-param_grid = {
-    'max_depth': [3, 5, 7],          # Tree depth
-    'learning_rate': [0.1, 0.2, 0.3],  # Learning rate (eta)
-    'n_estimators': [50, 100, 150],   # Number of trees
-    'subsample': [0.8, 1.0],          # Subsample ratio
-    'colsample_bytree': [0.8, 1.0]    # Column subsample ratio
-}
-
-# Initialize GridSearchCV
-grid_search = GridSearchCV(
-    estimator=XGBClassifier(random_state=42),  # Base model
-    param_grid=param_grid,
-    cv=5,  # 5-fold cross-validation
-    scoring='accuracy',  # Optimize accuracy
-    verbose=1,  # Display progress
-    n_jobs=-1  # Use all available CPU cores
-)
-
-print("Running Grid Search...")  # ADDED: Inform user of progress
-grid_search.fit(X_filtered, y_encoded)  # Run GridSearchCV
-
-# Display best parameters and score
-print("\nBest Parameters:", grid_search.best_params_)  # ADDED: Show best parameters
-print("Best Score (Accuracy):", grid_search.best_score_)  # ADDED: Show best accuracy
-
-# Step 7: Train Final Model with Best Parameters - UPDATED
-# Retrieve the best parameters
-best_params = grid_search.best_params_
-
-# Initialize model with best parameters
-best_model = XGBClassifier(**best_params, random_state=42)
-best_model.fit(X_filtered, y_encoded)  # Train final model
-
-# Save the trained model
-dump(best_model, 'joblib/credit_risk_model.joblib')  # UPDATED: Save the model in the 'joblib' folder
-
-# Step 8: Evaluate the Model
-# Cross-validation with the best model
-num_folds = 5
+# Number of validation folds
+num_folds = 38  # Adjust based on your needs
 skf = StratifiedKFold(n_splits=num_folds, shuffle=True, random_state=42)
 
 all_y_test = []
