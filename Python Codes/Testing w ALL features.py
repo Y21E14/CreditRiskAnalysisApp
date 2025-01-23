@@ -46,10 +46,10 @@ test_data = pd.DataFrame({
     "Earnings Before Interest (optional)": [50000], # Very high earnings before interest
     "Gross Profit (Loss)": [100000],             # Extremely high profitability
     "Total Liabilities": [2900],                 # Low total liabilities
-    "Retained Earnings": [100000],               # Very high retained earnings
+    "Retained Earnings": [0],               # Very high retained earnings
     "Total Stockholders Equity": [997100],       # High equity
     "Total Interest and Related Expense": [200], # Minimal interest expense
-    "Total Market Value (optional)": [1500000],  # Very high market value
+    "Total Market Value (optional)": [0],  # Very high market value
     "Total Inventories": [500000],               # High inventory levels
     "Total Revenue": [1000000],                  # Extremely high revenue
     "Operating Activities - Net Cash Flow": [50000], # Strong positive operating cash flow
