@@ -14,9 +14,6 @@ label_encoder = load("Python Codes/label_encoder.joblib")
 def calculate_debt_to_equity_ratio(total_long_term_debt, total_debt_current_liabilities, total_stockholders_equity):
     return (total_long_term_debt - total_debt_current_liabilities) / total_stockholders_equity
 
-def calculate_net_cash_flow(operating_activities, financing_activities):
-    return operating_activities + financing_activities
-
 def calculate_gross_profit_margin(gross_profit_loss, total_revenue):
     return (gross_profit_loss / total_revenue) * 100
 
@@ -33,11 +30,7 @@ def predict():
         data = request.json
         user_input = pd.DataFrame([data])
 
-        # Perform backend calculations
-        user_input["Net Cash Flow"] = calculate_net_cash_flow(
-            user_input["Operating Activities - Net Cash Flow"].iloc[0],
-            user_input["Financing Activities - Net Cash Flow"].iloc[0]
-        )
+        # Perform backend calculation
         user_input["Gross Profit Margin"] = calculate_gross_profit_margin(
             user_input["Gross Profit (Loss)"].iloc[0],
             user_input["Total Revenue"].iloc[0]
@@ -78,7 +71,6 @@ def predict():
             "credit_risk_numerical": int(predicted_class[0]),
             "credit_risk_label": predicted_label[0],
             "calculated_ratios": {
-                "Net Cash Flow": float(user_input["Net Cash Flow"].iloc[0]),
                 "Gross Profit Margin": float(user_input["Gross Profit Margin"].iloc[0]),
                 "Debt to Equity Ratio": float(user_input["Debt to Equity Ratio"].iloc[0]),
                 "Working Capital Ratio": float(user_input["Working Capital Ratio"].iloc[0]),

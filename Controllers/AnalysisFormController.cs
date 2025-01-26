@@ -11,7 +11,7 @@ namespace CreditRiskAnalysisApp.Controllers
         [HttpGet]
         public IActionResult InputForm()
         {
-            ViewData["Title"] = "Analysis Form";
+            ViewData["Title"] = "Predict Company Credit Risk";
             return View();
         }
 
@@ -49,32 +49,7 @@ namespace CreditRiskAnalysisApp.Controllers
             {
                 return View(input);
             }
-
-            // Perform calculations
-            decimal totalCurrentLiabilities = input.TotalLongTermDebt - input.TotalDebtInCurrentLiabilities;
-
-            var ratios = new
-            {
-                DebtToEquityRatio = (input.TotalDebtInCurrentLiabilities - totalCurrentLiabilities) / input.TotalStockholdersEquity,
-                WorkingCapitalRatio = input.TotalAsset / totalCurrentLiabilities,
-                DebtServiceCoverageRatio = input.EarningsBeforeInterest.HasValue ? input.EarningsBeforeInterest.Value / (input.TotalLongTermDebt + input.TotalDebtInCurrentLiabilities) : 0,
-                GrossProfitMargin = (input.GrossProfitLoss / input.TotalRevenue) * 100
-            };
-
-            ViewBag.Ratios = ratios;
             return View();
-        }
-
-        [HttpPost]
-        public IActionResult Submit(AnalysisInput input)
-        {
-            if (!ModelState.IsValid)
-            {
-                // Return the form with validation errors
-                return View("InputForm", input);
-            }
-            // Proceed with processing valid input
-            return RedirectToAction("Success");
         }
 
         [HttpPost]
