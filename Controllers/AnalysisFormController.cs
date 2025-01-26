@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CreditRiskAnalysisApp.Models;
+using System.Text;
+using System.Net.Http;
+using System.Text.Json;
 
 namespace CreditRiskAnalysisApp.Controllers
 {
@@ -74,5 +77,58 @@ namespace CreditRiskAnalysisApp.Controllers
             return RedirectToAction("Success");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SubmitForm(AnalysisInput input)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://127.0.0.1:5000");
+
+                // Construct the JSON payload
+                var payload = new
+                {
+                    Total_Asset = input.TotalAsset,
+                    Cash = input.Cash,
+                    Total_Debt_in_Current_Liabilities = input.TotalDebtInCurrentLiabilities,
+                    Total_Long_Term_Debt = input.TotalLongTermDebt,
+                    Earnings_Before_Interest = input.EarningsBeforeInterest,
+                    Gross_Profit_Loss = input.GrossProfitLoss,
+                    Total_Liabilities = input.TotalLiabilities,
+                    Retained_Earnings = input.RetainedEarnings,
+                    Total_Stockholders_Equity = input.TotalStockholdersEquity,
+                    Total_Interest_and_Related_Expense = input.TotalInterestAndRelatedExpense,
+                    Total_Market_Value = input.TotalMarketValue,
+                    Total_Inventories = input.TotalInventories,
+                    Total_Revenue = input.TotalRevenue,
+                    Operating_Activities_Net_Cash_Flow = input.OperatingActivitiesNetCashFlow,
+                    Financing_Activities_Net_Cash_Flow = input.FinancingActivitiesNetCashFlow,
+                };
+
+                var jsonContent = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+
+                try
+                {
+                    var response = await client.PostAsync("/predict", jsonContent);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = await response.Content.ReadAsStringAsync();
+                        var prediction = JsonSerializer.Deserialize<dynamic>(result);
+                        ViewBag.CreditRiskResult = prediction["credit_risk_label"];
+                    }
+                    else
+                    {
+                        ViewBag.Error = $"Error: {response.StatusCode} - {response.ReasonPhrase}";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewBag.Error = $"An exception occurred: {ex.Message}";
+                }
+            }
+
+            return View("InputForm", input);
+        }
+
     }
+
 }

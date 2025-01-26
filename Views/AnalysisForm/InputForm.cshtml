@@ -6,7 +6,7 @@
 
 <h1>Analysis Form</h1>
 
-<form asp-action="InputForm" method="post">
+<form asp-action="SubmitForm" method="post">
     <div class="form-group mb-3">
         <label asp-for="TotalAsset">Total Asset:</label>
         <input asp-for="TotalAsset" class="form-control input-short" required />
@@ -82,16 +82,73 @@
         <input asp-for="FinancingActivitiesNetCashFlow" class="form-control input-short" required />
         <span asp-validation-for="FinancingActivitiesNetCashFlow" class="text-danger"></span>
     </div>
-    <button type="submit" class="btn btn-primary mt-2">Submit</button>
+    <button type="button" id="submitButton" class="btn btn-primary mt-2">Submit</button>
+
 </form>
 
-@if (ViewBag.Ratios != null)
+<div id="credit-risk-result" class="alert alert-info mt-3" style="display: none;"></div>
+
+@if (ViewBag.Error != null)
 {
-    <h2>Calculated Ratios</h2>
-    <ul>
-        <li>Debt-to-Equity Ratio: @ViewBag.Ratios.DebtToEquityRatio</li>
-        <li>Working Capital Ratio: @ViewBag.Ratios.WorkingCapitalRatio</li>
-        <li>Debt Service Coverage Ratio: @ViewBag.Ratios.DebtServiceCoverageRatio</li>
-        <li>Gross Profit Margin: @ViewBag.Ratios.GrossProfitMargin%</li>
-    </ul>
+    <div class="alert alert-danger">
+        <strong>Error:</strong> @ViewBag.Error
+    </div>
 }
+
+<script>
+    document.getElementById("submitButton").addEventListener("click", async () => {
+        const payload = {
+            "Total Asset": parseFloat(document.querySelector("[name='TotalAsset']").value),
+            "Cash": parseFloat(document.querySelector("[name='Cash']").value),
+            "Total Debt in Current Liabilities": parseFloat(document.querySelector("[name='TotalDebtInCurrentLiabilities']").value),
+            "Total Long-Term Debt": parseFloat(document.querySelector("[name='TotalLongTermDebt']").value),
+            "Earnings Before Interest": parseFloat(document.querySelector("[name='EarningsBeforeInterest']").value),
+            "Gross Profit (Loss)": parseFloat(document.querySelector("[name='GrossProfitLoss']").value),
+            "Total Liabilities": parseFloat(document.querySelector("[name='TotalLiabilities']").value),
+            "Retained Earnings": parseFloat(document.querySelector("[name='RetainedEarnings']").value),
+            "Total Stockholders Equity": parseFloat(document.querySelector("[name='TotalStockholdersEquity']").value),
+            "Total Interest and Related Expense": parseFloat(document.querySelector("[name='TotalInterestAndRelatedExpense']").value),
+            "Total Market Value": parseFloat(document.querySelector("[name='TotalMarketValue']").value),
+            "Total Inventories": parseFloat(document.querySelector("[name='TotalInventories']").value),
+            "Total Revenue": parseFloat(document.querySelector("[name='TotalRevenue']").value),
+            "Operating Activities - Net Cash Flow": parseFloat(document.querySelector("[name='OperatingActivitiesNetCashFlow']").value),
+            "Financing Activities - Net Cash Flow": parseFloat(document.querySelector("[name='FinancingActivitiesNetCashFlow']").value)
+        };
+
+        const resultDiv = document.getElementById("credit-risk-result");
+
+        try {
+            const response = await fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                resultDiv.innerHTML = `
+                        <strong>Credit Risk:</strong> ${result.credit_risk_label}<br>
+                        <strong>Credit Risk Numerical:</strong> ${result.credit_risk_numerical}<br>
+                        <strong>Debt Service Coverage Ratio:</strong> ${result.calculated_ratios["Debt Service Coverage Ratio"]}<br>
+                        <strong>Debt to Equity Ratio:</strong> ${result.calculated_ratios["Debt to Equity Ratio"]}<br>
+                        <strong>Gross Profit Margin:</strong> ${result.calculated_ratios["Gross Profit Margin"]}<br>
+                        <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}
+                    `;
+                resultDiv.style.display = "block";
+                resultDiv.classList.replace("alert-danger", "alert-info");
+            } else {
+                resultDiv.textContent = `Error: ${result.error || "Unknown error"}`;
+                resultDiv.style.display = "block";
+                resultDiv.classList.replace("alert-info", "alert-danger");
+            }
+        } catch (error) {
+            resultDiv.textContent = `An exception occurred: ${error.message}`;
+            resultDiv.style.display = "block";
+            resultDiv.classList.replace("alert-info", "alert-danger");
+        }
+    });
+
+</script>
