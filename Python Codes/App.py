@@ -31,27 +31,27 @@ def predict():
         user_input = pd.DataFrame([data])
 
         # Perform backend calculation
-        user_input["Gross Profit Margin"] = calculate_gross_profit_margin(
+        user_input["Gross Profit Margin"] = round(calculate_gross_profit_margin(
             user_input["Gross Profit (Loss)"].iloc[0],
             user_input["Total Revenue"].iloc[0]
-        )
-        user_input["Debt to Equity Ratio"] = calculate_debt_to_equity_ratio(
+        ), 2)
+        user_input["Debt to Equity Ratio"] = round(calculate_debt_to_equity_ratio(
             user_input["Total Long-Term Debt"].iloc[0],
             user_input["Total Debt in Current Liabilities"].iloc[0],
             user_input["Total Stockholders Equity"].iloc[0]
-        )
-        user_input["Working Capital Ratio"] = calculate_working_capital_ratio(
+        ), 2)
+        user_input["Working Capital Ratio"] = round(calculate_working_capital_ratio(
             user_input["Total Asset"].iloc[0],
             user_input["Cash"].iloc[0],
             user_input["Total Inventories"].iloc[0],
             user_input["Total Long-Term Debt"].iloc[0],
             user_input["Total Debt in Current Liabilities"].iloc[0]
-        )
-        user_input["Debt Service Coverage Ratio"] = calculate_debt_service_coverage_ratio(
+        ), 2)
+        user_input["Debt Service Coverage Ratio"] = round(calculate_debt_service_coverage_ratio(
             user_input["Earnings Before Interest"].iloc[0],
             user_input["Total Long-Term Debt"].iloc[0],
             user_input["Total Debt in Current Liabilities"].iloc[0]
-        )
+        ), 2)
 
         # Ensure all required features are included
         feature_names = model.get_booster().feature_names
