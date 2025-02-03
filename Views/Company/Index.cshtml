@@ -2,11 +2,22 @@
 
 <h1>Companies</h1>
 
+<!-- Success message (Only for this view) -->
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <a asp-action="Create" class="btn btn-primary mb-2">Create New Company</a>
 
 <a asp-action="ExportCompaniesToCSV" asp-controller="Company" class="btn btn-success mb-2">
     Export Companies to CSV
 </a>
+
+<p>Total number of companies: <strong>@ViewBag.TotalCompanies</strong></p>
+
 
 <table class="table">
     <thead>

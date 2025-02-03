@@ -1,0 +1,49 @@
+﻿@model IEnumerable<CreditRiskAnalysisApp.Models.ArchivedPrediction>
+
+@{
+    var companyName = Model?.FirstOrDefault()?.Company?.Name ?? "Unknown Company";
+}
+
+
+<h1>Archived Predictions for <strong>@companyName</strong></h1>
+
+<!-- Back to predictions button -->
+<a href="@Url.Action("Index", "Report")" class="btn btn-primary mb-3">Back to Predictions</a>
+
+<!-- Archived Predictions Table -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>Prediction Date</th>
+            <th>Credit Risk</th>
+            <th>Credit Risk Numerical</th>
+            <th>Debt Service Coverage Ratio</th>
+            <th>Debt to Equity Ratio</th>
+            <th>Gross Profit Margin</th>
+            <th>Working Capital Ratio</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var prediction in Model)
+            {
+                <tr>
+                    <td>@prediction.PredictionDate.ToString("MMMM dd, yyyy hh:mm tt")</td>
+                    <td>@prediction.CreditRisk</td>
+                    <td>@prediction.CreditRiskNumerical</td>
+                    <td>@prediction.DebtServiceCoverageRatio</td>
+                    <td>@prediction.DebtToEquityRatio</td>
+                    <td>@prediction.GrossProfitMargin</td>
+                    <td>@prediction.WorkingCapitalRatio</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center text-danger">No archived predictions found for this company.</td>
+            </tr>
+        }
+    </tbody>
+</table>

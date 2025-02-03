@@ -19,6 +19,7 @@ namespace CreditRiskAnalysisApp.Controllers
         public IActionResult Index()
         {
             var users = _context.Users.ToList(); // Fetch users
+            ViewBag.TotalUsers = users.Count; // Store total count in ViewBag
             return View(users);
         }
 
@@ -33,15 +34,18 @@ namespace CreditRiskAnalysisApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(User user)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Users.Add(user);
-                _context.SaveChanges();
-                TempData["SuccessMessage"] = "User created successfully!";
-                return RedirectToAction(nameof(Index));
+                return View(user); // Display validation messages
             }
-            return View(user);
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            TempData["SuccessMessage"] = "User created successfully!";
+            return RedirectToAction(nameof(Index));
+            
         }
+
 
         // GET: Edit User
         public IActionResult Edit(int id)

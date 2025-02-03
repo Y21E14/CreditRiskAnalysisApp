@@ -9,85 +9,116 @@
 <form asp-action="SubmitForm" method="post">
     <div class="form-group mb-3">
         <label asp-for="TotalAsset">Total Asset:</label>
-        <input asp-for="TotalAsset" class="form-control input-short" required />
+        <input asp-for="TotalAsset" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalAsset" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="Cash">Cash:</label>
-        <input asp-for="Cash" class="form-control input-short" required />
+        <input asp-for="Cash" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="Cash" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalDebtInCurrentLiabilities">Total Debt in Current Liabilities:</label>
-        <input asp-for="TotalDebtInCurrentLiabilities" class="form-control input-short" required />
+        <input asp-for="TotalDebtInCurrentLiabilities" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalDebtInCurrentLiabilities" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalLongTermDebt">Total Long-Term Debt:</label>
-        <input asp-for="TotalLongTermDebt" class="form-control input-short" required />
+        <input asp-for="TotalLongTermDebt" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalLongTermDebt" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="EarningsBeforeInterest">Earnings Before Interest:</label>
-        <input asp-for="EarningsBeforeInterest" class="form-control input-short" required />
+        <input asp-for="EarningsBeforeInterest" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="EarningsBeforeInterest" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="GrossProfitLoss">Gross Profit (Loss):</label>
-        <input asp-for="GrossProfitLoss" class="form-control input-short" required />
+        <input asp-for="GrossProfitLoss" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="GrossProfitLoss" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalLiabilities">Total Liabilities:</label>
-        <input asp-for="TotalLiabilities" class="form-control input-short" required />
+        <input asp-for="TotalLiabilities" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalLiabilities" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="RetainedEarnings">Retained Earnings:</label>
-        <input asp-for="RetainedEarnings" class="form-control input-short" required />
+        <input asp-for="RetainedEarnings" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="RetainedEarnings" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalStockholdersEquity">Total Stockholders Equity:</label>
-        <input asp-for="TotalStockholdersEquity" class="form-control input-short" required />
+        <input asp-for="TotalStockholdersEquity" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalStockholdersEquity" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalInterestAndRelatedExpense">Total Interest and Related Expense:</label>
-        <input asp-for="TotalInterestAndRelatedExpense" class="form-control input-short" required />
+        <input asp-for="TotalInterestAndRelatedExpense" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalInterestAndRelatedExpense" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalMarketValue">Total Market Value:</label>
-        <input asp-for="TotalMarketValue" class="form-control input-short" required />
+        <input asp-for="TotalMarketValue" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalMarketValue" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalInventories">Total Inventories:</label>
-        <input asp-for="TotalInventories" class="form-control input-short" required />
+        <input asp-for="TotalInventories" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalInventories" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalRevenue">Total Revenue:</label>
-        <input asp-for="TotalRevenue" class="form-control input-short" required />
+        <input asp-for="TotalRevenue" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalRevenue" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="OperatingActivitiesNetCashFlow">Operating Activities - Net Cash Flow:</label>
-        <input asp-for="OperatingActivitiesNetCashFlow" class="form-control input-short" required />
+        <input asp-for="OperatingActivitiesNetCashFlow" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="OperatingActivitiesNetCashFlow" class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="FinancingActivitiesNetCashFlow">Financing Activities - Net Cash Flow:</label>
-        <input asp-for="FinancingActivitiesNetCashFlow" class="form-control input-short" required />
+        <input asp-for="FinancingActivitiesNetCashFlow" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="FinancingActivitiesNetCashFlow" class="text-danger"></span>
     </div>
-    <button type="button" id="submitButton" class="btn btn-primary mt-2">Submit</button>
-
+    <button type="submit" class="btn btn-primary mt-2">Submit</button>
 </form>
 
-<div id="credit-risk-result" class="alert alert-info mt-3" style="display: none;"></div>
 
+
+@if (ViewBag.Prediction != null)
+{
+    <div class="alert alert-info mt-4">
+        <h4>Prediction Results</h4>
+        <p><strong>Credit Risk:</strong> @ViewBag.Prediction.CreditRiskLabel</p>
+        <p><strong>Credit Risk Numerical:</strong> @ViewBag.Prediction.CreditRiskNumerical</p>
+        <p><strong>Debt Service Coverage Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.DebtServiceCoverageRatio</p>
+        <p><strong>Debt to Equity Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.DebtToEquityRatio</p>
+        <p><strong>Gross Profit Margin:</strong> @ViewBag.Prediction.CalculatedRatios.GrossProfitMargin</p>
+        <p><strong>Working Capital Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.WorkingCapitalRatio</p>
+
+        <!-- Form for company selection and saving prediction -->
+        <form asp-action="SavePrediction" method="post">
+            <div>
+                <label for="companyId">Select Company to Save Prediction:</label>
+                <select name="companyId" asp-items="ViewBag.Companies" required></select>
+            </div>
+
+            <!-- Hidden fields to pass prediction data -->
+            <input type="hidden" name="CreditRiskLabel" value="@ViewBag.Prediction.CreditRiskLabel" />
+            <input type="hidden" name="CreditRiskNumerical" value="@ViewBag.Prediction.CreditRiskNumerical" />
+            <input type="hidden" name="CalculatedRatios.DebtServiceCoverageRatio" value="@ViewBag.Prediction.CalculatedRatios.DebtServiceCoverageRatio" />
+            <input type="hidden" name="CalculatedRatios.DebtToEquityRatio" value="@ViewBag.Prediction.CalculatedRatios.DebtToEquityRatio" />
+            <input type="hidden" name="CalculatedRatios.GrossProfitMargin" value="@ViewBag.Prediction.CalculatedRatios.GrossProfitMargin" />
+            <input type="hidden" name="CalculatedRatios.WorkingCapitalRatio" value="@ViewBag.Prediction.CalculatedRatios.WorkingCapitalRatio" />
+
+            <button type="submit" class="btn btn-success">Save Prediction</button>
+        </form>
+    </div>
+}
+
+<!-- Display error messages if any -->
 @if (ViewBag.Error != null)
 {
     <div class="alert alert-danger">

@@ -23,6 +23,7 @@ namespace CreditRiskAnalysisApp.Controllers
         // GET: Company/Create
         public IActionResult Create()
         {
+        
             return View();
         }
 
@@ -31,6 +32,19 @@ namespace CreditRiskAnalysisApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Company company)
         {
+            // Check for duplicate UEN
+            if (_context.Companies.Any(c => c.UEN.ToLower() == company.UEN.ToLower()))
+            {
+                ModelState.AddModelError("UEN", "A company with this UEN already exists.");
+            }
+
+            // Check for duplicate company name (case-insensitive)
+            if (_context.Companies.Any(c => c.Name.ToLower() == company.Name.ToLower()))
+            {
+                ModelState.AddModelError("Name", "A company with this name already exists.");
+            }
+
+
             if (ModelState.IsValid)
             {
                 _context.Companies.Add(company);
@@ -40,6 +54,7 @@ namespace CreditRiskAnalysisApp.Controllers
             }
 
             // Check for model errors
+            
             TempData["ErrorMessage"] = "Failed to create the company. Please check the details.";
             return View(company);
         }
@@ -128,6 +143,8 @@ namespace CreditRiskAnalysisApp.Controllers
         public IActionResult Index()
         {
             var companies = _context.Companies.ToList();
+            // Set the total count of companies in the ViewBag
+            ViewBag.TotalCompanies = companies.Count;
             return View(companies);
         }
 
