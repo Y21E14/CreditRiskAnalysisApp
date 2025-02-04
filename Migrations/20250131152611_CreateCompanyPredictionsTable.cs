@@ -4,72 +4,42 @@
 
 namespace CreditRiskAnalysisApp.Migrations
 {
-    /// <inheritdoc />
     public partial class CreateCompanyPredictionsTable : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            //migrationBuilder.DropForeignKey(
-            //name: "FK_CompanyPredictions_FinancialStatements_FinancialStatementId",
-            //table: "CompanyPredictions");
-
-            migrationBuilder.Sql(
-    @"IF EXISTS (SELECT name FROM sys.indexes WHERE name = 'IX_CompanyPredictions_FinancialStatementId') 
-      BEGIN 
-          DROP INDEX IX_CompanyPredictions_FinancialStatementId ON CompanyPredictions 
-      END");
-
-
-            migrationBuilder.Sql(
-      @"IF EXISTS (SELECT 1 
-                 FROM INFORMATION_SCHEMA.COLUMNS 
-                 WHERE TABLE_NAME = 'CompanyPredictions' 
-                 AND COLUMN_NAME = 'FinancialStatementId')
-      BEGIN 
-          ALTER TABLE CompanyPredictions 
-          DROP COLUMN FinancialStatementId 
-      END");
-
-            migrationBuilder.Sql(
-    @"IF EXISTS (SELECT 1 
-                 FROM INFORMATION_SCHEMA.COLUMNS 
-                 WHERE TABLE_NAME = 'CompanyPredictions' 
-                 AND COLUMN_NAME = 'IsCurrent')
-      BEGIN 
-          ALTER TABLE CompanyPredictions 
-          DROP COLUMN IsCurrent 
-      END");
+            // Create the CompanyPredictions table with all required columns
+            migrationBuilder.CreateTable(
+                name: "CompanyPredictions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyId = table.Column<int>(nullable: false),
+                    CreditRisk = table.Column<string>(nullable: true),
+                    CreditRiskNumerical = table.Column<int>(nullable: false),
+                    DebtServiceCoverageRatio = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    DebtToEquityRatio = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    GrossProfitMargin = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    WorkingCapitalRatio = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    PredictionDate = table.Column<DateTime>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false, defaultValueSql: "GETDATE()")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CompanyPredictions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CompanyPredictions_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "FinancialStatementId",
-                table: "CompanyPredictions",
-                type: "int",
-                nullable: true);
-
-            migrationBuilder.AddColumn<bool>(
-                name: "IsCurrent",
-                table: "CompanyPredictions",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CompanyPredictions_FinancialStatementId",
-                table: "CompanyPredictions",
-                column: "FinancialStatementId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_CompanyPredictions_FinancialStatements_FinancialStatementId",
-                table: "CompanyPredictions",
-                column: "FinancialStatementId",
-                principalTable: "FinancialStatements",
-                principalColumn: "FileId",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.DropTable(name: "CompanyPredictions");
         }
     }
 }
