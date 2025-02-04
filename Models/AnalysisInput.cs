@@ -3,6 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
     public class AnalysisInput
     {
+    
+        [Key] // This marks 'Id' as the primary key
+        public int Id { get; set; }
+
         [Required(ErrorMessage = "Total Asset is required")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Total Asset must be a positive number")]
         public decimal TotalAsset { get; set; }

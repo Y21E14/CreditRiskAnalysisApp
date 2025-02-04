@@ -4,6 +4,7 @@ using CreditRiskAnalysisApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CreditRiskAnalysisApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250131152611_CreateCompanyPredictionsTable")]
+    partial class CreateCompanyPredictionsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,22 +44,18 @@ namespace CreditRiskAnalysisApp.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("DebtServiceCoverageRatio")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("DebtToEquityRatio")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("GrossProfitMargin")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("PredictionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("WorkingCapitalRatio")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -75,7 +74,6 @@ namespace CreditRiskAnalysisApp.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("Cash")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("EarningsBeforeInterest")
@@ -85,7 +83,6 @@ namespace CreditRiskAnalysisApp.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("GrossProfitLoss")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("OperatingActivitiesNetCashFlow")
@@ -95,7 +92,6 @@ namespace CreditRiskAnalysisApp.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalAsset")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalDebtInCurrentLiabilities")
@@ -108,7 +104,6 @@ namespace CreditRiskAnalysisApp.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalLiabilities")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("TotalLongTermDebt")
@@ -126,50 +121,6 @@ namespace CreditRiskAnalysisApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AnalysisInputs");
-                });
-
-            modelBuilder.Entity("CreditRiskAnalysisApp.Models.ArchivedPrediction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreditRisk")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreditRiskNumerical")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("DebtServiceCoverageRatio")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("DebtToEquityRatio")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("GrossProfitMargin")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("PredictionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("WorkingCapitalRatio")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("ArchivedPredictions");
                 });
 
             modelBuilder.Entity("CreditRiskAnalysisApp.Models.Company", b =>
@@ -277,17 +228,6 @@ namespace CreditRiskAnalysisApp.Migrations
                 });
 
             modelBuilder.Entity("CompanyPrediction", b =>
-                {
-                    b.HasOne("CreditRiskAnalysisApp.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("CreditRiskAnalysisApp.Models.ArchivedPrediction", b =>
                 {
                     b.HasOne("CreditRiskAnalysisApp.Models.Company", "Company")
                         .WithMany()

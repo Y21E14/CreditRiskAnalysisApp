@@ -3,15 +3,30 @@ using CreditRiskAnalysisApp.Models;
 using System.Text;
 using System.Net.Http;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using CreditRiskAnalysisApp.Data;
 
 namespace CreditRiskAnalysisApp.Controllers
 {
+
     public class AnalysisFormController : Controller
     {
+        private readonly ApplicationDbContext _context;
+        public AnalysisFormController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
         [HttpGet]
+
         public IActionResult InputForm()
         {
             ViewData["Title"] = "Predict Company Credit Risk";
+
+            var hasExistingPrediction = _context.CompanyPredictions.Any();
+            ViewBag.HasExistingPrediction = hasExistingPrediction;
+
+
             return View();
         }
 
@@ -60,35 +75,57 @@ namespace CreditRiskAnalysisApp.Controllers
                 client.BaseAddress = new Uri("http://127.0.0.1:5000");
 
                 // Construct the JSON payload
-                var payload = new
-                {
-                    Total_Asset = input.TotalAsset,
-                    Cash = input.Cash,
-                    Total_Debt_in_Current_Liabilities = input.TotalDebtInCurrentLiabilities,
-                    Total_Long_Term_Debt = input.TotalLongTermDebt,
-                    Earnings_Before_Interest = input.EarningsBeforeInterest,
-                    Gross_Profit_Loss = input.GrossProfitLoss,
-                    Total_Liabilities = input.TotalLiabilities,
-                    Retained_Earnings = input.RetainedEarnings,
-                    Total_Stockholders_Equity = input.TotalStockholdersEquity,
-                    Total_Interest_and_Related_Expense = input.TotalInterestAndRelatedExpense,
-                    Total_Market_Value = input.TotalMarketValue,
-                    Total_Inventories = input.TotalInventories,
-                    Total_Revenue = input.TotalRevenue,
-                    Operating_Activities_Net_Cash_Flow = input.OperatingActivitiesNetCashFlow,
-                    Financing_Activities_Net_Cash_Flow = input.FinancingActivitiesNetCashFlow,
-                };
+                var payload = new Dictionary<string, object>
+{
+    { "Total Asset", input.TotalAsset },
+    { "Cash", input.Cash },
+    { "Total Debt in Current Liabilities", input.TotalDebtInCurrentLiabilities },
+    { "Total Long-Term Debt", input.TotalLongTermDebt },
+    { "Earnings Before Interest", input.EarningsBeforeInterest },
+    { "Gross Profit (Loss)", input.GrossProfitLoss }, // Make sure this matches the Flask format exactly
+    { "Total Liabilities", input.TotalLiabilities },
+    { "Retained Earnings", input.RetainedEarnings },
+    { "Total Stockholders Equity", input.TotalStockholdersEquity },
+    { "Total Interest and Related Expense", input.TotalInterestAndRelatedExpense },
+    { "Total Market Value", input.TotalMarketValue },
+    { "Total Inventories", input.TotalInventories },
+    { "Total Revenue", input.TotalRevenue },
+    { "Operating Activities - Net Cash Flow", input.OperatingActivitiesNetCashFlow },
+    { "Financing Activities - Net Cash Flow", input.FinancingActivitiesNetCashFlow }
+};
 
-                var jsonContent = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = null // Ensures it respects the key exactly as defined
+                };
+                var jsonContent = new StringContent(JsonSerializer.Serialize(payload, options), Encoding.UTF8, "application/json");
+
 
                 try
                 {
                     var response = await client.PostAsync("/predict", jsonContent);
+                    var result = await response.Content.ReadAsStringAsync(); // Get raw JSON response
+
+                    // For debugging purposes - log the response content to the console
+                    Console.WriteLine("API Response: " + result);
+
                     if (response.IsSuccessStatusCode)
                     {
-                        var result = await response.Content.ReadAsStringAsync();
-                        var prediction = JsonSerializer.Deserialize<dynamic>(result);
-                        ViewBag.CreditRiskResult = prediction["credit_risk_label"];
+                        var prediction = JsonSerializer.Deserialize<PredictionResponse>(result);
+                        if (prediction != null && prediction.CalculatedRatios != null)
+                        {
+                            ViewBag.Prediction = prediction;
+
+                            // Load companies for the dropdown after displaying results
+                            ViewBag.Companies = _context.Companies
+                                .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.Name })
+                                .ToList();
+                        }
+                        else
+                        {
+                            ViewBag.Error = $"Failed to get a valid prediction response. Response Content: {result}";
+                        }
                     }
                     else
                     {
@@ -99,10 +136,59 @@ namespace CreditRiskAnalysisApp.Controllers
                 {
                     ViewBag.Error = $"An exception occurred: {ex.Message}";
                 }
+
             }
 
             return View("InputForm", input);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SavePrediction(int companyId, PredictionResponse prediction)
+        {
+            // Find the most recent prediction for the company
+            var existingPrediction = await _context.CompanyPredictions
+                .Where(p => p.CompanyId == companyId)
+                .OrderByDescending(p => p.PredictionDate)
+                .FirstOrDefaultAsync();
+
+            // Archive the old prediction if it exists
+            if (existingPrediction != null)
+            {
+                var archivedPrediction = new ArchivedPrediction
+                {
+                    CompanyId = existingPrediction.CompanyId,
+                    CreditRisk = existingPrediction.CreditRisk,
+                    CreditRiskNumerical = existingPrediction.CreditRiskNumerical,
+                    DebtServiceCoverageRatio = existingPrediction.DebtServiceCoverageRatio,
+                    DebtToEquityRatio = existingPrediction.DebtToEquityRatio,
+                    GrossProfitMargin = existingPrediction.GrossProfitMargin,
+                    WorkingCapitalRatio = existingPrediction.WorkingCapitalRatio,
+                    PredictionDate = existingPrediction.PredictionDate
+                };
+
+                _context.ArchivedPredictions.Add(archivedPrediction);
+                _context.CompanyPredictions.Remove(existingPrediction);
+            }
+
+            // Create and save the new prediction
+            var newPrediction = new CompanyPrediction
+            {
+                CompanyId = companyId,
+                CreditRisk = prediction.CreditRiskLabel,
+                CreditRiskNumerical = prediction.CreditRiskNumerical,
+                DebtServiceCoverageRatio = prediction.CalculatedRatios.DebtServiceCoverageRatio,
+                DebtToEquityRatio = prediction.CalculatedRatios.DebtToEquityRatio,
+                GrossProfitMargin = prediction.CalculatedRatios.GrossProfitMargin,
+                WorkingCapitalRatio = prediction.CalculatedRatios.WorkingCapitalRatio,
+                PredictionDate = DateTime.Now
+            };
+
+            _context.CompanyPredictions.Add(newPrediction);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index", "Report");
+        }
+
 
     }
 

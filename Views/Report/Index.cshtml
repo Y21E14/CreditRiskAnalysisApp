@@ -1,0 +1,118 @@
+﻿@model CreditRiskAnalysisApp.Models.ReportViewModel
+
+<h1 style="background-color: #4CAF50; color: white; padding: 10px;">Company Credit Risk Report</h1>
+
+<h2 style="text-decoration: underline;">Top 10 Companies Overview</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Top 10 <strong>Best</strong> Companies</h4>
+            <table class="table table-striped table-bordered" style="background-color: #d9f2e6;">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Gross Profit Margin (%)</th>
+                        <th>Credit Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var company in Model.TopBestCompanies)
+                    {
+                        <tr>
+                            <td>@company.Company.Name</td>
+                            <td>@company.GrossProfitMargin.ToString("0.00")</td>
+                            <td>@company.CreditRisk</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <h4>Top 10 <strong>Worst</strong> Companies</h4>
+            <table class="table table-striped table-bordered" style="background-color: #f2d9d9;">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Gross Profit Margin (%)</th>
+                        <th>Credit Risk</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var company in Model.TopWorstCompanies)
+                    {
+                        <tr>
+                            <td>@company.Company.Name</td>
+                            <td>@company.GrossProfitMargin.ToString("0.00")</td>
+                            <td>@company.CreditRisk</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<hr />
+<!-- Filter and Prediction Section -->
+<h3 style="text-decoration: underline;">Filter Companies by Risk</h3>
+
+<form asp-action="Index" method="get">
+    <label for="riskCategory">Select Risk Category:</label>
+    <select id="riskCategory" name="riskCategory" asp-items="ViewBag.RiskCategories" class="form-select" onchange="this.form.submit()">
+    </select>
+</form>
+
+
+<h2>Prediction Results</h2>
+
+@if (Model.FilteredCompanies.Any())
+{
+    foreach (var company in Model.FilteredCompanies)
+    {
+        <div class="card mb-3" style="background-color: #e6f7ff;">
+            <div class="card-header">
+                <h5>@company.Company.Name</h5>
+  
+                <p><strong>Credit Risk:</strong> @company.CreditRisk</p>
+                <button class="btn btn-primary btn-sm toggle-button" onclick="toggleDetails('details-@company.CompanyId')">
+                    View Full Prediction
+                </button>
+
+                <a href="@Url.Action("ViewArchivedPredictions", "Report", new { companyId = company.CompanyId })"
+                   class="btn btn-secondary btn-sm">
+                    View Archived Predictions
+                </a>
+
+            </div>
+
+            <div id="details-@company.CompanyId" class="card-body prediction-details" style="display: none;">
+                <p><strong>Credit Risk Numerical:</strong> @company.CreditRiskNumerical</p>
+                <p><strong>Debt Service Coverage Ratio:</strong> @company.DebtServiceCoverageRatio</p>
+                <p><strong>Debt to Equity Ratio:</strong> @company.DebtToEquityRatio</p>
+                <p><strong>Gross Profit Margin:</strong> @company.GrossProfitMargin.ToString("0.00") %</p>
+                <p><strong>Working Capital Ratio:</strong> @company.WorkingCapitalRatio</p>
+                <p><strong>Prediction Date:</strong> @company.PredictionDate.ToString("MMMM dd, yyyy hh:mm tt")</p>
+
+                <button class="btn btn-secondary btn-sm" onclick="toggleDetails('details-@company.CompanyId')">
+                    Hide Results
+                </button>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="text-danger">No companies match the selected risk category.</p>
+}
+
+<!-- Add this at the end of Report/Index.cshtml -->
+<script>
+    function toggleDetails(id) {
+        const detailsSection = document.getElementById(id);
+        const isVisible = detailsSection.style.display === "block";
+
+        // Toggle the visibility of the details section
+        detailsSection.style.display = isVisible ? "none" : "block";
+    }
+</script>

@@ -7,8 +7,8 @@ app = Flask(__name__)
 CORS(app)
 
 # Load the trained XGBoost model and LabelEncoder
-model = load("Python Codes/credit_risk_model.joblib")
-label_encoder = load("Python Codes/label_encoder.joblib")
+model = load("Python Codes/joblib/credit_risk_model.joblib")
+label_encoder = load("Python Codes/joblib/label_encoder.joblib")
 
 # Backend calculation functions
 def calculate_debt_to_equity_ratio(total_long_term_debt, total_debt_current_liabilities, total_stockholders_equity):

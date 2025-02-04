@@ -13,6 +13,7 @@ namespace CreditRiskAnalysisApp.Models
 
         [Required(ErrorMessage = "NRIC is required.")]
         [StringLength(10, ErrorMessage = "NRIC cannot exceed 10 characters.")]
+        [RegularExpression(@"^[STFG]\d{7}[A-Z]$", ErrorMessage = "Invalid NRIC format.")]
         public string NRIC { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Email is required.")]

@@ -21,6 +21,32 @@ namespace CreditRiskAnalysisApp.Data // Ensure this matches your project's names
 
         public DbSet<Status> Statuses { get; set; }
 
+        public DbSet<CompanyPrediction> CompanyPredictions { get; set; }
 
+        public DbSet<ArchivedPrediction> ArchivedPredictions { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Specify precision for decimal fields in CompanyPrediction
+            modelBuilder.Entity<CompanyPrediction>().Property(p => p.WorkingCapitalRatio).HasPrecision(18, 2);
+            modelBuilder.Entity<CompanyPrediction>().Property(p => p.DebtToEquityRatio).HasPrecision(18, 2);
+            modelBuilder.Entity<CompanyPrediction>().Property(p => p.GrossProfitMargin).HasPrecision(18, 2);
+            modelBuilder.Entity<CompanyPrediction>().Property(p => p.DebtServiceCoverageRatio).HasPrecision(18, 2);
+
+            // Specify precision for decimal fields in ArchivedPrediction
+            modelBuilder.Entity<ArchivedPrediction>().Property(p => p.WorkingCapitalRatio).HasPrecision(18, 2);
+            modelBuilder.Entity<ArchivedPrediction>().Property(p => p.DebtToEquityRatio).HasPrecision(18, 2);
+            modelBuilder.Entity<ArchivedPrediction>().Property(p => p.GrossProfitMargin).HasPrecision(18, 2);
+            modelBuilder.Entity<ArchivedPrediction>().Property(p => p.DebtServiceCoverageRatio).HasPrecision(18, 2);
+
+            // Specify precision for fields in AnalysisInput (optional based on warnings)
+            modelBuilder.Entity<AnalysisInput>().Property(a => a.Cash).HasPrecision(18, 2);
+            modelBuilder.Entity<AnalysisInput>().Property(a => a.TotalAsset).HasPrecision(18, 2);
+            modelBuilder.Entity<AnalysisInput>().Property(a => a.TotalLiabilities).HasPrecision(18, 2);
+            modelBuilder.Entity<AnalysisInput>().Property(a => a.GrossProfitLoss).HasPrecision(18, 2);
+        }
     }
 }
+

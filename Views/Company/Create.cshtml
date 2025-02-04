@@ -2,16 +2,17 @@
 
 <h2>Create New Company</h2>
 
+
 <form asp-action="Create" method="post">
     <div class="form-group">
         <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
+        <input asp-for="Name" autocomplete="off" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
     <div class="form-group">
         <label asp-for="UEN"></label>
-        <input asp-for="UEN" class="form-control" />
+        <input asp-for="UEN" autocomplete="off" class="form-control" />
         <span asp-validation-for="UEN" class="text-danger"></span>
     </div>
 
