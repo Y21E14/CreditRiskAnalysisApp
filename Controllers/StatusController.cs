@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using CreditRiskAnalysisApp.Data;
+using X.PagedList;  
 using System.Linq;
 using System.Text;
+using X.PagedList.Extensions;
 
 namespace CreditRiskAnalysisApp.Controllers
 {
@@ -15,9 +17,12 @@ namespace CreditRiskAnalysisApp.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page = 1)
         {
-            var companies = _context.Companies.ToList();
+            int pageSize = 10;  // Show 5 records per page
+
+            // Fetch companies and apply paging
+            var companies = _context.Companies.OrderBy(c => c.Name).ToPagedList(page ?? 1, pageSize);
 
             // Pass dropdown options
             ViewBag.LoanStatusList = new SelectList(new[] { "Draft", "Approved", "Expired" });
@@ -34,13 +39,12 @@ namespace CreditRiskAnalysisApp.Controllers
                 company.LoanStatus = loanStatus;
                 _context.SaveChanges();
 
-                // Set success message
+                
                 TempData["SuccessMessage"] = $"Loan status of {company.Name} is successfully updated as \"{loanStatus}\".";
             }
             return RedirectToAction("Index");
         }
 
-        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         // Export Loan Status to CSV
         public IActionResult ExportLoanStatusToCSV()
         {
@@ -62,6 +66,5 @@ namespace CreditRiskAnalysisApp.Controllers
             byte[] buffer = Encoding.UTF8.GetBytes(csvBuilder.ToString());
             return File(buffer, "text/csv", "LoanStatus.csv");
         }
-
     }
 }

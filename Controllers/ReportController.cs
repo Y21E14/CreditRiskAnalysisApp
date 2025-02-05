@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace CreditRiskAnalysisApp.Controllers
 {
@@ -17,8 +19,10 @@ namespace CreditRiskAnalysisApp.Controllers
             _context = context;
         }
 
-        public IActionResult Index(string riskCategory = "All")
+        public IActionResult Index(string riskCategory = "All", int? page = 1)
         {
+            int pageSize = 5;  // Show 5 companies per page
+
             // Step 1: Load predictions and related companies
             var predictionsWithCompanies = _context.CompanyPredictions
                 .Include(p => p.Company)
@@ -32,12 +36,11 @@ namespace CreditRiskAnalysisApp.Controllers
 
             // Sorting for Top 10 Best and Worst companies
             var topBestCompanies = recentPredictions
-     .OrderBy(p => p.CreditRiskNumerical)  // Prefer lower risk numerically
-     .ThenByDescending(p => p.GrossProfitMargin)  // Fall back on Gross Profit Margin
-     .Take(10)  // Ensure we always have 10 companies
-     .ToList();
+                .OrderBy(p => p.CreditRiskNumerical)  // Prefer lower risk numerically
+                .ThenByDescending(p => p.GrossProfitMargin)  // Fall back on Gross Profit Margin
+                .Take(10)  // Ensure we always have 10 companies
+                .ToList();
 
-            // No changes for the worst companies logic, unless required
             var topWorstCompanies = recentPredictions
                 .OrderByDescending(p => p.CreditRiskNumerical)  // Sort by highest risk first
                 .ThenBy(p => p.GrossProfitMargin)
@@ -49,13 +52,17 @@ namespace CreditRiskAnalysisApp.Controllers
                 ? recentPredictions
                 : recentPredictions.Where(c => c.CreditRisk == riskCategory).ToList();
 
+            // Create a paged list for filtered companies
+            var pagedCompanies = filteredCompanies.ToPagedList(page ?? 1, pageSize);
+
+            // Populate the risk category filter dropdown
             ViewBag.RiskCategories = new List<SelectListItem>
-    {
-        new SelectListItem { Text = "All Companies", Value = "All", Selected = riskCategory == "All" },
-        new SelectListItem { Text = "High Risk", Value = "High Risk", Selected = riskCategory == "High Risk" },
-        new SelectListItem { Text = "Moderate Risk", Value = "Moderate Risk", Selected = riskCategory == "Moderate Risk" },
-        new SelectListItem { Text = "Low Risk", Value = "Low Risk", Selected = riskCategory == "Low Risk" }
-    };
+            {
+                new SelectListItem { Text = "All Companies", Value = "All", Selected = riskCategory == "All" },
+                new SelectListItem { Text = "High Risk", Value = "High Risk", Selected = riskCategory == "High Risk" },
+                new SelectListItem { Text = "Moderate Risk", Value = "Moderate Risk", Selected = riskCategory == "Moderate Risk" },
+                new SelectListItem { Text = "Low Risk", Value = "Low Risk", Selected = riskCategory == "Low Risk" }
+            };
 
             ViewBag.SelectedRisk = riskCategory;
 
@@ -63,12 +70,13 @@ namespace CreditRiskAnalysisApp.Controllers
             {
                 TopBestCompanies = topBestCompanies,
                 TopWorstCompanies = topWorstCompanies,
-                FilteredCompanies = filteredCompanies,
+                FilteredCompanies = pagedCompanies,  // Use the paged list here
                 SelectedRisk = riskCategory
             };
 
             return View(model);
         }
+
         public async Task<IActionResult> ViewArchivedPredictions(int companyId)
         {
             var archivedPredictions = await _context.ArchivedPredictions
@@ -79,8 +87,5 @@ namespace CreditRiskAnalysisApp.Controllers
 
             return View("ViewArchivedPredictions", archivedPredictions);
         }
-
-
-
     }
 }

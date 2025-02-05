@@ -52,9 +52,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return View();
         }
 
-        // POST: CompanyFinancials/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create (CompanyFinancial companyFinancial)
@@ -88,9 +86,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return View(companyFinancial);
         }
 
-        // POST: CompanyFinancials/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Revenue,Expenses,Profit,CompanyId")] CompanyFinancial companyFinancial)

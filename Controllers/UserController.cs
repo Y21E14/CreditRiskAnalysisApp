@@ -4,6 +4,8 @@ using CreditRiskAnalysisApp.Data; // For ApplicationDbContext
 using CreditRiskAnalysisApp.Models; // For the User model
 using System.Text;
 using System.Linq;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace CreditRiskAnalysisApp.Controllers
 {
@@ -16,10 +18,11 @@ namespace CreditRiskAnalysisApp.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int? page=1)
         {
-            var users = _context.Users.ToList(); // Fetch users
-            ViewBag.TotalUsers = users.Count; // Store total count in ViewBag
+            int pageSize = 10;
+            var users = _context.Users.OrderBy(u => u.Name).ToPagedList(page ?? 1, pageSize);
+            ViewBag.TotalUsers = users.TotalItemCount; // Store total count in ViewBag
             return View(users);
         }
 
@@ -98,8 +101,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        // Export Users to CSV
+        
         public IActionResult ExportUsersToCSV()
         {
             var users = _context.Users.ToList();

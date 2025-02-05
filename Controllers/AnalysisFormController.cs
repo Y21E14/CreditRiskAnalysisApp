@@ -82,7 +82,7 @@ namespace CreditRiskAnalysisApp.Controllers
     { "Total Debt in Current Liabilities", input.TotalDebtInCurrentLiabilities },
     { "Total Long-Term Debt", input.TotalLongTermDebt },
     { "Earnings Before Interest", input.EarningsBeforeInterest },
-    { "Gross Profit (Loss)", input.GrossProfitLoss }, // Make sure this matches the Flask format exactly
+    { "Gross Profit (Loss)", input.GrossProfitLoss }, 
     { "Total Liabilities", input.TotalLiabilities },
     { "Retained Earnings", input.RetainedEarnings },
     { "Total Stockholders Equity", input.TotalStockholdersEquity },
@@ -97,7 +97,7 @@ namespace CreditRiskAnalysisApp.Controllers
 
                 var options = new JsonSerializerOptions
                 {
-                    PropertyNamingPolicy = null // Ensures it respects the key exactly as defined
+                    PropertyNamingPolicy = null
                 };
                 var jsonContent = new StringContent(JsonSerializer.Serialize(payload, options), Encoding.UTF8, "application/json");
 
@@ -170,7 +170,7 @@ namespace CreditRiskAnalysisApp.Controllers
                 _context.CompanyPredictions.Remove(existingPrediction);
             }
 
-            // Create and save the new prediction
+            // To create and save the new prediction
             var newPrediction = new CompanyPrediction
             {
                 CompanyId = companyId,

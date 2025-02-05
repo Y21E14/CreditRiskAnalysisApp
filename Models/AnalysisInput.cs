@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
     public class AnalysisInput
     {
     
-        [Key] // This marks 'Id' as the primary key
+        [Key]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Total Asset is required")]

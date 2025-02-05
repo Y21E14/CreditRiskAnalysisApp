@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using CreditRiskAnalysisApp.Data;
 using CreditRiskAnalysisApp.Models;
 using System.Text;
+using X.PagedList;
+using X.PagedList.Extensions;
 
 namespace CreditRiskAnalysisApp.Controllers
 {
@@ -20,14 +22,14 @@ namespace CreditRiskAnalysisApp.Controllers
             _context = context;
         }
 
-        // GET: Company/Create
+       
         public IActionResult Create()
         {
         
             return View();
         }
 
-        // POST: Company/Create
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Company company)
@@ -53,13 +55,13 @@ namespace CreditRiskAnalysisApp.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Check for model errors
+            
             
             TempData["ErrorMessage"] = "Failed to create the company. Please check the details.";
             return View(company);
         }
 
-        // GET: Company/Edit/5
+        
         public IActionResult Edit(int? id)
         {
             if (id == null || _context.Companies == null)
@@ -75,7 +77,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return View(company);
         }
 
-        // POST: Company/Edit/5
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, Company company)
@@ -107,7 +109,7 @@ namespace CreditRiskAnalysisApp.Controllers
             }
             return View(company);
         }
-        // GET: Company/Delete/5
+        
         public IActionResult Delete(int? id)
         {
             if (id == null || _context.Companies == null)
@@ -124,7 +126,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return View(company);
         }
 
-        // POST: Company/Delete/5
+        
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -139,16 +141,19 @@ namespace CreditRiskAnalysisApp.Controllers
         }
 
 
-        // GET: Company/Index
-        public IActionResult Index()
+        
+        public IActionResult Index(int? page)
         {
-            var companies = _context.Companies.ToList();
-            // Set the total count of companies in the ViewBag
-            ViewBag.TotalCompanies = companies.Count;
+            int pageSize = 10; // Display 10 companies per page
+            int pageNumber = page ?? 1; // Default to the first page
+
+            var companies = _context.Companies.ToPagedList(pageNumber, pageSize);
+            ViewBag.TotalCompanies = _context.Companies.Count(); // To display the total
+
             return View(companies);
         }
 
-        // GET: Company/ViewFinancialStatements/{companyId}
+        
         public IActionResult ViewFinancialStatements(int companyId)
         {
             var company = _context.Companies
@@ -162,9 +167,7 @@ namespace CreditRiskAnalysisApp.Controllers
 
             return View(company);
         }
-        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-        // Upload company financial statement
-        // GET: Company/Upload/{id}
+        
         public IActionResult Upload(int id)
         {
             var company = _context.Companies.Find(id);
@@ -209,7 +212,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return RedirectToAction("ViewFinancialStatements", new { companyId = companyId });
         }
 
-        // GET: Company/EditFinancialStatement/{id}
+        
         public IActionResult EditFinancialStatement(int id)
         {
             var statement = _context.FinancialStatements.Find(id);
@@ -222,7 +225,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return View(statement);
         }
 
-        // POST: Company/EditFinancialStatement/{id}
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditFinancialStatement(int id, IFormFile newFile)
@@ -255,7 +258,7 @@ namespace CreditRiskAnalysisApp.Controllers
         }
 
 
-        // GET: Company/DeleteFinancialStatement/{id}
+       
         public IActionResult DeleteFinancialStatement(int id)
         {
             var statement = _context.FinancialStatements
@@ -271,7 +274,7 @@ namespace CreditRiskAnalysisApp.Controllers
         }
 
 
-        // POST: Company/DeleteFinancialStatement/{id}
+        
         [HttpPost, ActionName("DeleteFinancialStatement")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteFinancialStatementConfirmed(int id)
@@ -290,7 +293,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return NotFound();
         }
 
-        //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  
         public IActionResult ExportCompaniesToCSV()
         {
             var companies = _context.Companies.ToList();

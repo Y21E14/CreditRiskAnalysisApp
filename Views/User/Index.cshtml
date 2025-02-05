@@ -1,4 +1,6 @@
-﻿@model IEnumerable<CreditRiskAnalysisApp.Models.User>
+﻿@using X.PagedList.Mvc
+@using X.PagedList
+@model IPagedList<CreditRiskAnalysisApp.Models.User>
 
 <h1>Users</h1>
 
@@ -41,3 +43,54 @@
         }
     </tbody>
 </table>
+
+<!-- Pagination Controls and Record Info -->
+<div class="pagination-container">
+    <div class="pagination-buttons d-flex justify-content-center">
+        @if (Model.HasPreviousPage)
+        {
+            <a href="@Url.Action("Index", new { page = Model.PageNumber - 1 })" class="btn btn-light me-2">Prev</a>
+        }
+        @if (Model.HasNextPage)
+        {
+            <a href="@Url.Action("Index", new { page = Model.PageNumber + 1 })" class="btn btn-light">Next</a>
+        }
+    </div>
+
+    <div class="pagination-info text-center">
+        <p>Page @Model.PageNumber of @Model.PageCount</p>
+        <p>
+            Showing @((Model.PageNumber - 1) * Model.PageSize + 1) -
+            @(Model.PageNumber * Model.PageSize > Model.TotalItemCount ? Model.TotalItemCount : Model.PageNumber * Model.PageSize)
+            of @Model.TotalItemCount records
+        </p>
+    </div>
+</div>
+
+<!-- Style -->
+<style>
+    .pagination-container {
+        margin-top: 20px;
+    }
+
+    .pagination-buttons {
+        margin-bottom: 5px;
+    }
+
+    .pagination-info {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .btn-light {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .btn-light:hover {
+            background-color: #e9ecef;
+        }
+</style>

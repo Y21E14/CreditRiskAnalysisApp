@@ -1,8 +1,11 @@
-﻿@model IEnumerable<CreditRiskAnalysisApp.Models.Company>
+﻿@using X.PagedList.Mvc
+@using X.PagedList
+@model IPagedList<CreditRiskAnalysisApp.Models.Company>
+
 
 <h1>Companies</h1>
 
-<!-- Success message (Only for this view) -->
+<!-- Success message -->
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
@@ -11,13 +14,9 @@
 }
 
 <a asp-action="Create" class="btn btn-primary mb-2">Create New Company</a>
-
-<a asp-action="ExportCompaniesToCSV" asp-controller="Company" class="btn btn-success mb-2">
-    Export Companies to CSV
-</a>
+<a asp-action="ExportCompaniesToCSV" asp-controller="Company" class="btn btn-success mb-2">Export Companies to CSV</a>
 
 <p>Total number of companies: <strong>@ViewBag.TotalCompanies</strong></p>
-
 
 <table class="table">
     <thead>
@@ -28,8 +27,6 @@
         </tr>
     </thead>
     <tbody>
-
-
         @foreach (var company in Model)
         {
             <tr>
@@ -38,10 +35,62 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@company.Id" class="btn btn-warning">Edit</a> |
                     <a asp-action="Delete" asp-route-id="@company.Id" class="btn btn-danger">Delete</a> |
-                    <a asp-action="ViewFinancialStatements" asp-route-companyId="@company.Id" class="btn btn-primary">View Company Financial Statement</a>
+                    <a asp-action="ViewFinancialStatements" asp-route-companyId="@company.Id" class="btn btn-primary">
+                        View Company Financial Statement
+                    </a>
                 </td>
-
             </tr>
         }
     </tbody>
 </table>
+
+<!-- Pagination Controls and Record Info -->
+<div class="pagination-container">
+    <div class="pagination-buttons d-flex justify-content-center">
+        @if (Model.HasPreviousPage)
+        {
+            <a href="@Url.Action("Index", new { page = Model.PageNumber - 1 })" class="btn btn-light me-2">Prev</a>
+        }
+        @if (Model.HasNextPage)
+        {
+            <a href="@Url.Action("Index", new { page = Model.PageNumber + 1 })" class="btn btn-light">Next</a>
+        }
+    </div>
+
+    <div class="pagination-info text-center">
+        <p>Page @Model.PageNumber of @Model.PageCount</p>
+        <p>
+            Showing @((Model.PageNumber - 1) * Model.PageSize + 1) -
+            @(Model.PageNumber * Model.PageSize > Model.TotalItemCount ? Model.TotalItemCount : Model.PageNumber * Model.PageSize)
+            of @Model.TotalItemCount records
+        </p>
+    </div>
+</div>
+
+<!-- Style -->
+<style>
+    .pagination-container {
+        margin-top: 20px;
+    }
+
+    .pagination-buttons {
+        margin-bottom: 5px;
+    }
+
+    .pagination-info {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .btn-light {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        color: #007bff;
+        text-decoration: none;
+    }
+
+        .btn-light:hover {
+            background-color: #e9ecef;
+        }
+</style>
