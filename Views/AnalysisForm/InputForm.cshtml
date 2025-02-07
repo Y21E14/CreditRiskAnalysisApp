@@ -117,6 +117,27 @@
 
             <button type="submit" class="btn btn-success">Save Prediction</button>
         </form>
+
+        <div>
+            <h3>SHAP Plots</h3>
+            <img id="shap-summary" class="shap-img" alt="SHAP Summary Plot" />
+            <img id="shap-force" class="shap-img" alt="SHAP Force Plot" />
+        </div>
+
+        <script>
+            // Fetch the prediction data from Flask and display SHAP plots
+            fetch('/predict', {
+                method: "POST",
+                body: JSON.stringify(userInput),
+                headers: { "Content-Type": "application/json" }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("shap-summary").src = "data:image/png;base64," + data.shap_plots.summary_plot;
+                    document.getElementById("shap-force").src = "data:image/png;base64," + data.shap_plots.force_plot;
+                });
+        </script>
+
     </div>
 }
 
@@ -168,8 +189,13 @@
                         <strong>Debt Service Coverage Ratio:</strong> ${result.calculated_ratios["Debt Service Coverage Ratio"]}<br>
                         <strong>Debt to Equity Ratio:</strong> ${result.calculated_ratios["Debt to Equity Ratio"]}<br>
                         <strong>Gross Profit Margin:</strong> ${result.calculated_ratios["Gross Profit Margin"]}<br>
-                        <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}
+                        <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}<br>
                     `;
+
+                // Set the images' source attributes to the base64-encoded strings
+                document.getElementById("shap-summary").src = "data:image/png;base64," + result.shap_plots.summary_plot;
+                document.getElementById("shap-force").src = "data:image/png;base64," + result.shap_plots.force_plot;
+
                 resultDiv.style.display = "block";
                 resultDiv.classList.replace("alert-danger", "alert-info");
             } else {
@@ -183,5 +209,6 @@
             resultDiv.classList.replace("alert-info", "alert-danger");
         }
     });
+
 
 </script>
