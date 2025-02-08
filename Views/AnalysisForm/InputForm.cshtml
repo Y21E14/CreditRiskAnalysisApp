@@ -67,7 +67,9 @@
     <div class="form-group mb-3">
         <label asp-for="TotalInventories">Total Inventories:</label>
         <input asp-for="TotalInventories" autocomplete="off" class="form-control input-short" required />
-        <span asp-validation-for="TotalInventories" class="text-danger"></span>
+        <span asp-validation-for="TotalInventories"
+              class="text-dan
+ger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalRevenue">Total Revenue:</label>
@@ -117,27 +119,6 @@
 
             <button type="submit" class="btn btn-success">Save Prediction</button>
         </form>
-
-        <div>
-            <h3>SHAP Plots</h3>
-            <img id="shap-summary" class="shap-img" alt="SHAP Summary Plot" />
-            <img id="shap-force" class="shap-img" alt="SHAP Force Plot" />
-        </div>
-
-        <script>
-            // Fetch the prediction data from Flask and display SHAP plots
-            fetch('/predict', {
-                method: "POST",
-                body: JSON.stringify(userInput),
-                headers: { "Content-Type": "application/json" }
-            })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("shap-summary").src = "data:image/png;base64," + data.shap_plots.summary_plot;
-                    document.getElementById("shap-force").src = "data:image/png;base64," + data.shap_plots.force_plot;
-                });
-        </script>
-
     </div>
 }
 
@@ -150,65 +131,61 @@
 }
 
 <script>
-    document.getElementById("submitButton").addEventListener("click", async () => {
-        const payload = {
-            "Total Asset": parseFloat(document.querySelector("[name='TotalAsset']").value),
-            "Cash": parseFloat(document.querySelector("[name='Cash']").value),
-            "Total Debt in Current Liabilities": parseFloat(document.querySelector("[name='TotalDebtInCurrentLiabilities']").value),
-            "Total Long-Term Debt": parseFloat(document.querySelector("[name='TotalLongTermDebt']").value),
-            "Earnings Before Interest": parseFloat(document.querySelector("[name='EarningsBeforeInterest']").value),
-            "Gross Profit (Loss)": parseFloat(document.querySelector("[name='GrossProfitLoss']").value),
-            "Total Liabilities": parseFloat(document.querySelector("[name='TotalLiabilities']").value),
-            "Retained Earnings": parseFloat(document.querySelector("[name='RetainedEarnings']").value),
-            "Total Stockholders Equity": parseFloat(document.querySelector("[name='TotalStockholdersEquity']").value),
-            "Total Interest and Related Expense": parseFloat(document.querySelector("[name='TotalInterestAndRelatedExpense']").value),
-            "Total Market Value": parseFloat(document.querySelector("[name='TotalMarketValue']").value),
-            "Total Inventories": parseFloat(document.querySelector("[name='TotalInventories']").value),
-            "Total Revenue": parseFloat(document.querySelector("[name='TotalRevenue']").value),
-            "Operating Activities - Net Cash Flow": parseFloat(document.querySelector("[name='OperatingActivitiesNetCashFlow']").value),
-            "Financing Activities - Net Cash Flow": parseFloat(document.querySelector("[name='FinancingActivitiesNetCashFlow']").value)
-        };
 
-        const resultDiv = document.getElementById("credit-risk-result");
+        document.getElementById("submitButton").addEventListener("click", async () => {
+            const payload = {
+                "Total Asset": parseFloat(document.querySelector("[name='TotalAsset']").value),
+                "Cash": parseFloat(document.querySelector("[name='Cash']").value),
+                "Total Debt in Current Liabilities": parseFloat(document.querySelector("[name='TotalDebtInCurrentLiabilities']").value),
+                "Total Long-Term Debt": parseFloat(document.querySelector("[name='TotalLongTermDebt']").value),
+                "Earnings Before Interest": parseFloat(document.querySelector("[name='EarningsBeforeInterest']").value),
+                "Gross Profit (Loss)": parseFloat(document.que
+    rySelector("[name='GrossProfitLoss']").value),
+                "Total Liabilities": parseFloat(document.querySelector("[name='TotalLiabilities']").value),
+                "Retained Earnings": parseFloat(document.querySelector("[name='RetainedEarnings']").value),
+                "Total Stockholders Equity": parseFloat(document.querySelector("[name='TotalStockholdersEquity']").value),
+                "Total Interest and Related Expense": parseFloat(document.querySelector("[name='TotalInterestAndRelatedExpense']").value),
+                "Total Market Value": parseFloat(document.querySelector("[name='TotalMarketValue']").value),
+                "Total Inventories": parseFloat(document.querySelector("[name='TotalInventories']").value),
+                "Total Revenue": parseFloat(document.querySelector("[name='TotalRevenue']").value),
+                "Operating Activities - Net Cash Flow": parseFloat(document.querySelector("[name='OperatingActivitiesNetCashFlow']").value),
+                "Financing Activities - Net Cash Flow": parseFloat(document.querySelector("[name='FinancingActivitiesNetCashFlow']").value)
+            };
 
-        try {
-            const response = await fetch("http://127.0.0.1:5000/predict", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(payload),
-            });
+            const resultDiv = document.getElementById("credit-risk-result");
 
-            const result = await response.json();
+            try {
+                const response = await fetch("http://127.0.0.1:5000/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                });
 
-            if (response.ok) {
-                resultDiv.innerHTML = `
-                        <strong>Credit Risk:</strong> ${result.credit_risk_label}<br>
-                        <strong>Credit Risk Numerical:</strong> ${result.credit_risk_numerical}<br>
-                        <strong>Debt Service Coverage Ratio:</strong> ${result.calculated_ratios["Debt Service Coverage Ratio"]}<br>
-                        <strong>Debt to Equity Ratio:</strong> ${result.calculated_ratios["Debt to Equity Ratio"]}<br>
-                        <strong>Gross Profit Margin:</strong> ${result.calculated_ratios["Gross Profit Margin"]}<br>
-                        <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}<br>
-                    `;
+                const result = await response.json();
 
-                // Set the images' source attributes to the base64-encoded strings
-                document.getElementById("shap-summary").src = "data:image/png;base64," + result.shap_plots.summary_plot;
-                document.getElementById("shap-force").src = "data:image/png;base64," + result.shap_plots.force_plot;
-
-                resultDiv.style.display = "block";
-                resultDiv.classList.replace("alert-danger", "alert-info");
-            } else {
-                resultDiv.textContent = `Error: ${result.error || "Unknown error"}`;
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                            <strong>Credit Risk:</strong> ${result.credit_risk_label}<br>
+                            <strong>Credit Risk Numerical:</strong> ${result.credit_risk_numerical}<br>
+                            <strong>Debt Service Coverage Ratio:</strong> ${result.calculated_ratios["Debt Service Coverage Ratio"]}<br>
+                            <strong>Debt to Equity Ratio:</strong> ${result.calculated_ratios["Debt to Equity Ratio"]}<br>
+                            <strong>Gross Profit Margin:</strong> ${result.calculated_ratios["Gross Profit Margin"]}<br>
+                            <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}
+                        `;
+                    resultDiv.style.display = "block";
+                    resultDiv.classList.replace("alert-danger", "alert-info");
+                } else {
+                    resultDiv.textContent = Error: ${result.error || "Unknown error"};
+                    resultDiv.style.display = "block";
+                    resultDiv.classList.replace("alert-info", "alert-danger");
+                }
+            } catch (error) {
+                resultDiv.textContent = An exception occurred: ${error.message};
                 resultDiv.style.display = "block";
                 resultDiv.classList.replace("alert-info", "alert-danger");
             }
-        } catch (error) {
-            resultDiv.textContent = `An exception occurred: ${error.message}`;
-            resultDiv.style.display = "block";
-            resultDiv.classList.replace("alert-info", "alert-danger");
-        }
-    });
-
+        });
 
 </script>

@@ -1,11 +1,8 @@
 ﻿@model IEnumerable<CreditRiskAnalysisApp.Models.ArchivedPrediction>
 
-@{
-    var companyName = Model?.FirstOrDefault()?.Company?.Name ?? "Unknown Company";
-}
 
 
-<h1>Archived Predictions for <strong>@companyName</strong></h1>
+<h1>Archived Predictions for <strong>@ViewBag.companyName</strong></h1>
 
 <!-- Back to predictions button -->
 <a href="@Url.Action("Index", "Report")" class="btn btn-primary mb-3">Back to Predictions</a>

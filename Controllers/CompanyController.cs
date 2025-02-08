@@ -92,6 +92,7 @@ namespace CreditRiskAnalysisApp.Controllers
                 try
                 {
                     _context.Update(company);
+                    TempData["SuccessMessage"] = "Company updated successfully!";
                     _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -136,6 +137,7 @@ namespace CreditRiskAnalysisApp.Controllers
             {
                 _context.Companies.Remove(company);
                 _context.SaveChanges();
+                TempData["SuccessMessage"] = "Company deleted successfully!";
             }
             return RedirectToAction(nameof(Index));
         }
@@ -208,11 +210,13 @@ namespace CreditRiskAnalysisApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            TempData["Message"] = "File uploaded successfully!";
+            // Set success message in TempData
+            TempData["SuccessMessage"] = "File uploaded successfully!";
+
             return RedirectToAction("ViewFinancialStatements", new { companyId = companyId });
         }
 
-        
+
         public IActionResult EditFinancialStatement(int id)
         {
             var statement = _context.FinancialStatements.Find(id);
@@ -225,7 +229,7 @@ namespace CreditRiskAnalysisApp.Controllers
             return View(statement);
         }
 
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditFinancialStatement(int id, IFormFile newFile)
@@ -253,12 +257,12 @@ namespace CreditRiskAnalysisApp.Controllers
             _context.Update(statement);
             await _context.SaveChangesAsync();
 
-            TempData["Message"] = "File updated successfully!";
+            // Use TempData to store the success message
+            TempData["SuccessMessage"] = "File updated successfully!";
             return RedirectToAction("ViewFinancialStatements", new { companyId = statement.CompanyId });
         }
 
 
-       
         public IActionResult DeleteFinancialStatement(int id)
         {
             var statement = _context.FinancialStatements
@@ -274,7 +278,7 @@ namespace CreditRiskAnalysisApp.Controllers
         }
 
 
-        
+
         [HttpPost, ActionName("DeleteFinancialStatement")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteFinancialStatementConfirmed(int id)
@@ -286,14 +290,16 @@ namespace CreditRiskAnalysisApp.Controllers
                 _context.FinancialStatements.Remove(statement);
                 _context.SaveChanges();
 
-                TempData["Message"] = "Financial statement deleted successfully!";
+                // Set success message
+                TempData["SuccessMessage"] = "Financial statement deleted successfully!";
                 return RedirectToAction("ViewFinancialStatements", new { companyId = companyId });
             }
 
             return NotFound();
         }
+        
 
-  
+
         public IActionResult ExportCompaniesToCSV()
         {
             var companies = _context.Companies.ToList();
@@ -309,5 +315,18 @@ namespace CreditRiskAnalysisApp.Controllers
             byte[] buffer = Encoding.UTF8.GetBytes(csv.ToString());
             return File(buffer, "text/csv", "Companies_Report.csv");
         }
+
+        public IActionResult DownloadFinancialStatement(int id)
+        {
+            var statement = _context.FinancialStatements.FirstOrDefault(f => f.FileId == id);
+
+            if (statement == null)
+            {
+                return NotFound();
+            }
+
+            return File(statement.FileContent, "application/octet-stream", statement.FileName);
+        }
+
     }
 }

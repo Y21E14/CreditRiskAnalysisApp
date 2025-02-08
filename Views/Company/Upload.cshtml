@@ -4,6 +4,7 @@
 
 <h2>Upload Financial Statement for @ViewBag.CompanyName</h2>
 
+
 <form asp-action="Upload" asp-controller="Company" method="post" enctype="multipart/form-data">
     <input type="hidden" name="companyId" value="@ViewBag.CompanyId" />
 
@@ -15,6 +16,15 @@
     <button type="submit" class="btn btn-primary">Upload</button>
 </form>
 
+<a asp-action="ViewFinancialStatements" asp-route-companyId="@ViewBag.CompanyId" class="btn btn-secondary mt-3">Back</a>
+
+<!-- Display success message if present -->
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">@ViewBag.SuccessMessage</div>
+}
+
+<!-- Display error or warning message if present -->
 @if (ViewBag.Message != null)
 {
     <div class="alert alert-warning">@ViewBag.Message</div>

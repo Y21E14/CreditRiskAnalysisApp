@@ -25,7 +25,8 @@ namespace CreditRiskAnalysisApp.Controllers
             var companies = _context.Companies.OrderBy(c => c.Name).ToPagedList(page ?? 1, pageSize);
 
             // Pass dropdown options
-            ViewBag.LoanStatusList = new SelectList(new[] { "Draft", "Approved", "Expired" });
+            ViewBag.LoanStatusList = new List<string> { "Draft", "Approved", "Expired" };
+
 
             return View(companies);
         }

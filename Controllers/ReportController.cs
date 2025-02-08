@@ -79,13 +79,24 @@ namespace CreditRiskAnalysisApp.Controllers
 
         public async Task<IActionResult> ViewArchivedPredictions(int companyId)
         {
+            // Fetch the company details first
+            var company = await _context.Companies.FirstOrDefaultAsync(c => c.Id == companyId);
+
+            if (company == null)
+            {
+                return NotFound("Company not found.");
+            }
+
+            // Fetch the archived predictions
             var archivedPredictions = await _context.ArchivedPredictions
-                .Include(p => p.Company)  // Include related Company details
                 .Where(p => p.CompanyId == companyId)
                 .OrderByDescending(p => p.PredictionDate)
                 .ToListAsync();
 
+            // Pass both the company and predictions to the view
+            ViewBag.CompanyName = company.Name;
             return View("ViewArchivedPredictions", archivedPredictions);
         }
+
     }
 }

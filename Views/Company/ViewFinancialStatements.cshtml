@@ -4,6 +4,14 @@
 
 <a asp-action="Upload" asp-route-id="@Model.Id" class="btn btn-primary mb-3">Upload Financial Statement</a>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -29,3 +37,6 @@
 </table>
 
 <a asp-action="Index" class="btn btn-secondary">Back to List of Companies</a>
+
+<a asp-action="Index" asp-controller="Status" class="btn btn-info">Back to Loan Status Management</a>
+

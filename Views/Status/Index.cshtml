@@ -35,14 +35,14 @@
                 <td>
                     <form asp-action="UpdateLoanStatus" asp-controller="Status" method="post">
                         <input type="hidden" name="id" value="@company.Id" />
-                        <select name="loanStatus" asp-items="ViewBag.LoanStatusList" class="form-control">
-                            <option selected="selected">@company.LoanStatus</option>
+                        <select name="loanStatus" asp-items="@(new SelectList(ViewBag.LoanStatusList, @company.LoanStatus))" class="form-control">
                         </select>
+
                         <button type="submit" class="btn btn-primary btn-sm mt-1">Update</button>
                     </form>
                 </td>
                 <td>
-                    <a asp-action="ViewFinancialStatements" asp-controller="Company" asp-route-companyId="@company.Id" class="btn btn-primary btn-sm mt-1">View Financials</a>
+                    <a asp-action="ViewFinancialStatements" asp-controller="Company" asp-route-companyId="@company.Id" class="btn btn-primary btn-sm mt-1">View Company Financial Statement</a>
                 </td>
             </tr>
         }

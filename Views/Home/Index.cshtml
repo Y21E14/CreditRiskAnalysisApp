@@ -1,8 +1,7 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Check for Credit Risk here</p>
+﻿<div class="container mt-5">
+    <div class="text-center p-5 border rounded shadow" style="background-color: white;">
+        <h1 class="display-4" style="color: #1976d2;">Welcome</h1>
+        <p class="lead">View for Credit Risk here!</p>
+        <a href="@Url.Action("InputForm", "AnalysisForm")" class="btn btn-primary">Get Started</a>
+    </div>
 </div>
