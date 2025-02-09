@@ -36,18 +36,18 @@ namespace CreditRiskAnalysisApp.Controllers
 
             // Sorting for Top 10 Best and Worst companies
             var topBestCompanies = recentPredictions
-                .OrderBy(p => p.CreditRiskNumerical)  // Prefer lower risk numerically
-                .ThenByDescending(p => p.GrossProfitMargin)  // Fall back on Gross Profit Margin
-                .Take(10)  // Ensure we always have 10 companies
-                .ToList();
+            .OrderBy(p => p.CreditRisk == "Low Risk" ? 1 : p.CreditRisk == "Moderate Risk" ? 2 : 3)  // Low → Moderate → High
+            .ThenByDescending(p => p.GrossProfitMargin)  // Higher profit first
+            .Take(10)
+            .ToList();
 
             var topWorstCompanies = recentPredictions
-                .OrderByDescending(p => p.CreditRiskNumerical)  // Sort by highest risk first
-                .ThenBy(p => p.GrossProfitMargin)
-                .Take(10)
-                .ToList();
+           .OrderBy(p => p.CreditRisk == "High Risk" ? 1 : p.CreditRisk == "Moderate Risk" ? 2 : 3)  // High → Moderate → Low
+           .ThenBy(p => p.GrossProfitMargin)  // Lower profit first
+           .Take(10)
+           .ToList();
 
-            // Filtering logic
+
             var filteredCompanies = riskCategory == "All"
                 ? recentPredictions
                 : recentPredictions.Where(c => c.CreditRisk == riskCategory).ToList();

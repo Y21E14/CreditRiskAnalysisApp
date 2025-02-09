@@ -77,21 +77,21 @@ namespace CreditRiskAnalysisApp.Controllers
                 // Construct the JSON payload
                 var payload = new Dictionary<string, object>
 {
-    { "Total Asset", input.TotalAsset },
-    { "Cash", input.Cash },
-    { "Total Debt in Current Liabilities", input.TotalDebtInCurrentLiabilities },
-    { "Total Long-Term Debt", input.TotalLongTermDebt },
-    { "Earnings Before Interest", input.EarningsBeforeInterest },
-    { "Gross Profit (Loss)", input.GrossProfitLoss }, 
-    { "Total Liabilities", input.TotalLiabilities },
-    { "Retained Earnings", input.RetainedEarnings },
-    { "Total Stockholders Equity", input.TotalStockholdersEquity },
-    { "Total Interest and Related Expense", input.TotalInterestAndRelatedExpense },
-    { "Total Market Value", input.TotalMarketValue },
-    { "Total Inventories", input.TotalInventories },
-    { "Total Revenue", input.TotalRevenue },
-    { "Operating Activities - Net Cash Flow", input.OperatingActivitiesNetCashFlow },
-    { "Financing Activities - Net Cash Flow", input.FinancingActivitiesNetCashFlow }
+                { "Total Asset", input.TotalAsset },
+                { "Cash", input.Cash },
+                { "Total Debt in Current Liabilities", input.TotalDebtInCurrentLiabilities },
+                { "Total Long-Term Debt", input.TotalLongTermDebt },
+                { "Earnings Before Interest", input.EarningsBeforeInterest },
+                { "Gross Profit (Loss)", input.GrossProfitLoss }, 
+                { "Total Liabilities", input.TotalLiabilities },
+                { "Retained Earnings", input.RetainedEarnings },
+                { "Total Stockholders Equity", input.TotalStockholdersEquity },
+                { "Total Interest and Related Expense", input.TotalInterestAndRelatedExpense },
+                { "Total Market Value", input.TotalMarketValue },
+                { "Total Inventories", input.TotalInventories },
+                { "Total Revenue", input.TotalRevenue },
+                { "Operating Activities - Net Cash Flow", input.OperatingActivitiesNetCashFlow },
+                { "Financing Activities - Net Cash Flow", input.FinancingActivitiesNetCashFlow }
 };
 
 

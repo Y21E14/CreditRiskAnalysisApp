@@ -210,7 +210,7 @@ namespace CreditRiskAnalysisApp.Controllers
                 await _context.SaveChangesAsync();
             }
 
-            // Set success message in TempData
+            
             TempData["SuccessMessage"] = "File uploaded successfully!";
 
             return RedirectToAction("ViewFinancialStatements", new { companyId = companyId });
@@ -257,7 +257,7 @@ namespace CreditRiskAnalysisApp.Controllers
             _context.Update(statement);
             await _context.SaveChangesAsync();
 
-            // Use TempData to store the success message
+            
             TempData["SuccessMessage"] = "File updated successfully!";
             return RedirectToAction("ViewFinancialStatements", new { companyId = statement.CompanyId });
         }
