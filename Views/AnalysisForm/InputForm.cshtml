@@ -151,40 +151,55 @@ ger"></span>
                 "Financing Activities - Net Cash Flow": parseFloat(document.querySelector("[name='FinancingActivitiesNetCashFlow']").value)
             };
 
-            const resultDiv = document.getElementById("credit-risk-result");
+        const resultDiv = document.getElementById("credit-risk-result");
 
-            try {
-                const response = await fetch("http://127.0.0.1:5000/predict", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(payload),
-                });
+        try {
+            const response = await fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+            });
 
-                const result = await response.json();
+            const result = await response.json();
 
-                if (response.ok) {
-                    resultDiv.innerHTML = `
-                            <strong>Credit Risk:</strong> ${result.credit_risk_label}<br>
-                            <strong>Credit Risk Numerical:</strong> ${result.credit_risk_numerical}<br>
-                            <strong>Debt Service Coverage Ratio:</strong> ${result.calculated_ratios["Debt Service Coverage Ratio"]}<br>
-                            <strong>Debt to Equity Ratio:</strong> ${result.calculated_ratios["Debt to Equity Ratio"]}<br>
-                            <strong>Gross Profit Margin:</strong> ${result.calculated_ratios["Gross Profit Margin"]}<br>
-                            <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}
-                        `;
-                    resultDiv.style.display = "block";
-                    resultDiv.classList.replace("alert-danger", "alert-info");
-                } else {
-                    resultDiv.textContent = Error: ${result.error || "Unknown error"};
-                    resultDiv.style.display = "block";
-                    resultDiv.classList.replace("alert-info", "alert-danger");
-                }
-            } catch (error) {
-                resultDiv.textContent = An exception occurred: ${error.message};
+            if (response.ok) {
+                resultDiv.innerHTML = `
+                        <strong>Credit Risk:</strong> ${result.credit_risk_label}<br>
+                        <strong>Credit Risk Numerical:</strong> ${result.credit_risk_numerical}<br>
+                        <strong>Debt Service Coverage Ratio:</strong> ${result.calculated_ratios["Debt Service Coverage Ratio"]}<br>
+                        <strong>Debt to Equity Ratio:</strong> ${result.calculated_ratios["Debt to Equity Ratio"]}<br>
+                        <strong>Gross Profit Margin:</strong> ${result.calculated_ratios["Gross Profit Margin"]}<br>
+                        <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}
+                    `;
+                resultDiv.style.display = "block";
+                resultDiv.classList.replace("alert-danger", "alert-info");
+
+                // Set SHAP plots
+                document.getElementById("summary-plot").src = "data:image/png;base64," + result.shap_plots.summary_plot;
+                document.getElementById("force-plot").src = "data:image/png;base64," + result.shap_plots.force_plot;
+            } else {
+                resultDiv.textContent = `Error: ${result.error || "Unknown error"}`;
                 resultDiv.style.display = "block";
                 resultDiv.classList.replace("alert-info", "alert-danger");
             }
-        });
-
+        } catch (error) {
+            resultDiv.textContent = `An exception occurred: ${error.message}`;
+            resultDiv.style.display = "block";
+            resultDiv.classList.replace("alert-info", "alert-danger");
+        }
+    });
 </script>
+
+<div id="credit-risk-result" class="alert alert-info mt-3" style="display: none;"></div>
+
+<h4>SHAP Plots</h4>
+<div>
+    <h5>Summary Plot</h5>
+    <img id="summary-plot" alt="SHAP Summary Plot" style="max-width: 100%; height: auto;" />
+</div>
+<div>
+    <h5>Force Plot</h5>
+    <img id="force-plot" alt="SHAP Force Plot" style="max-width: 100%; height: auto;" />
+</div>
