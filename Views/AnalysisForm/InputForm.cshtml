@@ -102,6 +102,23 @@ ger"></span>
         <p><strong>Gross Profit Margin:</strong> @ViewBag.Prediction.CalculatedRatios.GrossProfitMargin</p>
         <p><strong>Working Capital Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.WorkingCapitalRatio</p>
 
+        <!-- Display SHAP plots -->
+        <h4>SHAP Plots</h4>
+
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+            <div>
+                <h5>Summary Plot</h5>
+                <img src="/static/images/summary_plot.png" alt="SHAP Summary Plot"
+                     style="width: 794px; height: 940px; max-width: 100%; border: 1px solid #ccc;" />
+            </div>
+
+            <div>
+                <h5>Force Plot</h5>
+                <img src="/static/images/force_plot.png" alt="SHAP Force Plot"
+                     style="width: 1826px; height: 362px; max-width: 100%; border: 1px solid #ccc;" />
+            </div>
+        </div>
+
         <!-- Form for company selection and saving prediction -->
         <form asp-action="SavePrediction" method="post">
             <div>
@@ -193,13 +210,3 @@ ger"></span>
 </script>
 
 <div id="credit-risk-result" class="alert alert-info mt-3" style="display: none;"></div>
-
-<h4>SHAP Plots</h4>
-<div>
-    <h5>Summary Plot</h5>
-    <img id="summary-plot" alt="SHAP Summary Plot" style="max-width: 100%; height: auto;" />
-</div>
-<div>
-    <h5>Force Plot</h5>
-    <img id="force-plot" alt="SHAP Force Plot" style="max-width: 100%; height: auto;" />
-</div>
