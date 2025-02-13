@@ -68,8 +68,7 @@
         <label asp-for="TotalInventories">Total Inventories:</label>
         <input asp-for="TotalInventories" autocomplete="off" class="form-control input-short" required />
         <span asp-validation-for="TotalInventories"
-              class="text-dan
-ger"></span>
+              class="text-danger"></span>
     </div>
     <div class="form-group mb-3">
         <label asp-for="TotalRevenue">Total Revenue:</label>
@@ -88,55 +87,52 @@ ger"></span>
     </div>
     <button type="submit" class="btn btn-primary mt-2">Submit</button>
 </form>
-
-
-
-@if (ViewBag.Prediction != null)
+@if (ViewBag.Prediction != null && ViewBag.Prediction.CreditRiskLabel != null)
 {
-    <div class="alert alert-info mt-4">
-        <h4>Prediction Results</h4>
-        <p><strong>Credit Risk:</strong> @ViewBag.Prediction.CreditRiskLabel</p>
-        <p><strong>Credit Risk Numerical:</strong> @ViewBag.Prediction.CreditRiskNumerical</p>
-        <p><strong>Debt Service Coverage Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.DebtServiceCoverageRatio</p>
-        <p><strong>Debt to Equity Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.DebtToEquityRatio</p>
-        <p><strong>Gross Profit Margin:</strong> @ViewBag.Prediction.CalculatedRatios.GrossProfitMargin</p>
-        <p><strong>Working Capital Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.WorkingCapitalRatio</p>
+<div class="alert alert-info mt-4">
+    <h4>Prediction Results</h4>
+    <p><strong>Credit Risk:</strong> @ViewBag.Prediction.CreditRiskLabel</p>
+    <p><strong>Credit Risk Numerical:</strong> @ViewBag.Prediction.CreditRiskNumerical</p>
+    <p><strong>Debt Service Coverage Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.DebtServiceCoverageRatio</p>
+    <p><strong>Debt to Equity Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.DebtToEquityRatio</p>
+    <p><strong>Gross Profit Margin:</strong> @ViewBag.Prediction.CalculatedRatios.GrossProfitMargin</p>
+    <p><strong>Working Capital Ratio:</strong> @ViewBag.Prediction.CalculatedRatios.WorkingCapitalRatio</p>
 
-        <!-- Display SHAP plots -->
-        <h4>SHAP Plots</h4>
+    <!-- Display SHAP plots -->
+    <h4>SHAP Plots</h4>
 
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
-            <div>
-                <h5>Summary Plot</h5>
-                <img src="/static/images/summary_plot.png" alt="SHAP Summary Plot"
-                     style="width: 794px; height: 940px; max-width: 100%; border: 1px solid #ccc;" />
-            </div>
-
-            <div>
-                <h5>Force Plot</h5>
-                <img src="/static/images/force_plot.png" alt="SHAP Force Plot"
-                     style="width: 1826px; height: 362px; max-width: 100%; border: 1px solid #ccc;" />
-            </div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
+        <div>
+            <h5>Summary Plot</h5>
+            <img src="/static/images/summary_plot.png" alt="SHAP Summary Plot"
+                 style="width: 794px; height: 940px; max-width: 100%; border: 1px solid #ccc;" />
         </div>
 
-        <!-- Form for company selection and saving prediction -->
-        <form asp-action="SavePrediction" method="post">
-            <div>
-                <label for="companyId">Select Company to Save Prediction:</label>
-                <select name="companyId" asp-items="ViewBag.Companies" required></select>
-            </div>
-
-            <!-- Hidden fields to pass prediction data -->
-            <input type="hidden" name="CreditRiskLabel" value="@ViewBag.Prediction.CreditRiskLabel" />
-            <input type="hidden" name="CreditRiskNumerical" value="@ViewBag.Prediction.CreditRiskNumerical" />
-            <input type="hidden" name="CalculatedRatios.DebtServiceCoverageRatio" value="@ViewBag.Prediction.CalculatedRatios.DebtServiceCoverageRatio" />
-            <input type="hidden" name="CalculatedRatios.DebtToEquityRatio" value="@ViewBag.Prediction.CalculatedRatios.DebtToEquityRatio" />
-            <input type="hidden" name="CalculatedRatios.GrossProfitMargin" value="@ViewBag.Prediction.CalculatedRatios.GrossProfitMargin" />
-            <input type="hidden" name="CalculatedRatios.WorkingCapitalRatio" value="@ViewBag.Prediction.CalculatedRatios.WorkingCapitalRatio" />
-
-            <button type="submit" class="btn btn-success">Save Prediction</button>
-        </form>
+        <div>
+            <h5>Force Plot</h5>
+            <img src="/static/images/force_plot.png" alt="SHAP Force Plot"
+                 style="width: 1826px; height: 362px; max-width: 100%; border: 1px solid #ccc;" />
+        </div>
     </div>
+
+    <!-- Form for company selection and saving prediction -->
+    <form asp-action="SavePrediction" method="post">
+        <div>
+            <label for="companyId">Select Company to Save Prediction:</label>
+            <select name="companyId" asp-items="ViewBag.Companies" required></select>
+        </div>
+
+        <!-- Hidden fields to pass prediction data -->
+        <input type="hidden" name="CreditRiskLabel" value="@ViewBag.Prediction.CreditRiskLabel" />
+        <input type="hidden" name="CreditRiskNumerical" value="@ViewBag.Prediction.CreditRiskNumerical" />
+        <input type="hidden" name="CalculatedRatios.DebtServiceCoverageRatio" value="@ViewBag.Prediction.CalculatedRatios.DebtServiceCoverageRatio" />
+        <input type="hidden" name="CalculatedRatios.DebtToEquityRatio" value="@ViewBag.Prediction.CalculatedRatios.DebtToEquityRatio" />
+        <input type="hidden" name="CalculatedRatios.GrossProfitMargin" value="@ViewBag.Prediction.CalculatedRatios.GrossProfitMargin" />
+        <input type="hidden" name="CalculatedRatios.WorkingCapitalRatio" value="@ViewBag.Prediction.CalculatedRatios.WorkingCapitalRatio" />
+
+        <button type="submit" class="btn btn-success">Save Prediction</button>
+    </form>
+</div>
 }
 
 <!-- Display error messages if any -->
@@ -149,64 +145,64 @@ ger"></span>
 
 <script>
 
-        document.getElementById("submitButton").addEventListener("click", async () => {
-            const payload = {
-                "Total Asset": parseFloat(document.querySelector("[name='TotalAsset']").value),
-                "Cash": parseFloat(document.querySelector("[name='Cash']").value),
-                "Total Debt in Current Liabilities": parseFloat(document.querySelector("[name='TotalDebtInCurrentLiabilities']").value),
-                "Total Long-Term Debt": parseFloat(document.querySelector("[name='TotalLongTermDebt']").value),
-                "Earnings Before Interest": parseFloat(document.querySelector("[name='EarningsBeforeInterest']").value),
-                "Gross Profit (Loss)": parseFloat(document.querySelector("[name='GrossProfitLoss']").value),
-                "Total Liabilities": parseFloat(document.querySelector("[name='TotalLiabilities']").value),
-                "Retained Earnings": parseFloat(document.querySelector("[name='RetainedEarnings']").value),
-                "Total Stockholders Equity": parseFloat(document.querySelector("[name='TotalStockholdersEquity']").value),
-                "Total Interest and Related Expense": parseFloat(document.querySelector("[name='TotalInterestAndRelatedExpense']").value),
-                "Total Market Value": parseFloat(document.querySelector("[name='TotalMarketValue']").value),
-                "Total Inventories": parseFloat(document.querySelector("[name='TotalInventories']").value),
-                "Total Revenue": parseFloat(document.querySelector("[name='TotalRevenue']").value),
-                "Operating Activities - Net Cash Flow": parseFloat(document.querySelector("[name='OperatingActivitiesNetCashFlow']").value),
-                "Financing Activities - Net Cash Flow": parseFloat(document.querySelector("[name='FinancingActivitiesNetCashFlow']").value)
-            };
+            document.getElementById("submitButton").addEventListener("click", async () => {
+                const payload = {
+                    "Total Asset": parseFloat(document.querySelector("[name='TotalAsset']").value),
+                    "Cash": parseFloat(document.querySelector("[name='Cash']").value),
+                    "Total Debt in Current Liabilities": parseFloat(document.querySelector("[name='TotalDebtInCurrentLiabilities']").value),
+                    "Total Long-Term Debt": parseFloat(document.querySelector("[name='TotalLongTermDebt']").value),
+                    "Earnings Before Interest": parseFloat(document.querySelector("[name='EarningsBeforeInterest']").value),
+                    "Gross Profit (Loss)": parseFloat(document.querySelector("[name='GrossProfitLoss']").value),
+                    "Total Liabilities": parseFloat(document.querySelector("[name='TotalLiabilities']").value),
+                    "Retained Earnings": parseFloat(document.querySelector("[name='RetainedEarnings']").value),
+                    "Total Stockholders Equity": parseFloat(document.querySelector("[name='TotalStockholdersEquity']").value),
+                    "Total Interest and Related Expense": parseFloat(document.querySelector("[name='TotalInterestAndRelatedExpense']").value),
+                    "Total Market Value": parseFloat(document.querySelector("[name='TotalMarketValue']").value),
+                    "Total Inventories": parseFloat(document.querySelector("[name='TotalInventories']").value),
+                    "Total Revenue": parseFloat(document.querySelector("[name='TotalRevenue']").value),
+                    "Operating Activities - Net Cash Flow": parseFloat(document.querySelector("[name='OperatingActivitiesNetCashFlow']").value),
+                    "Financing Activities - Net Cash Flow": parseFloat(document.querySelector("[name='FinancingActivitiesNetCashFlow']").value)
+                };
 
-        const resultDiv = document.getElementById("credit-risk-result");
+            const resultDiv = document.getElementById("credit-risk-result");
 
-        try {
-            const response = await fetch("http://127.0.0.1:5000/predict", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(payload),
-            });
+            try {
+                const response = await fetch("http://127.0.0.1:5000/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                });
 
-            const result = await response.json();
+                const result = await response.json();
 
-            if (response.ok) {
-                resultDiv.innerHTML = `
-                        <strong>Credit Risk:</strong> ${result.credit_risk_label}<br>
-                        <strong>Credit Risk Numerical:</strong> ${result.credit_risk_numerical}<br>
-                        <strong>Debt Service Coverage Ratio:</strong> ${result.calculated_ratios["Debt Service Coverage Ratio"]}<br>
-                        <strong>Debt to Equity Ratio:</strong> ${result.calculated_ratios["Debt to Equity Ratio"]}<br>
-                        <strong>Gross Profit Margin:</strong> ${result.calculated_ratios["Gross Profit Margin"]}<br>
-                        <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}
-                    `;
-                resultDiv.style.display = "block";
-                resultDiv.classList.replace("alert-danger", "alert-info");
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+    <strong>Credit Risk:</strong> ${result.credit_risk_label}<br>
+    <strong>Credit Risk Numerical:</strong> ${result.credit_risk_numerical}<br>
+    <strong>Debt Service Coverage Ratio:</strong> ${result.calculated_ratios["Debt Service Coverage Ratio"]}<br>
+    <strong>Debt to Equity Ratio:</strong> ${result.calculated_ratios["Debt to Equity Ratio"]}<br>
+    <strong>Gross Profit Margin:</strong> ${result.calculated_ratios["Gross Profit Margin"]}<br>
+    <strong>Working Capital Ratio:</strong> ${result.calculated_ratios["Working Capital Ratio"]}
+                        `;
+                    resultDiv.style.display = "block";
+                    resultDiv.classList.replace("alert-danger", "alert-info");
 
-                // Set SHAP plots
-                document.getElementById("summary-plot").src = "data:image/png;base64," + result.shap_plots.summary_plot;
-                document.getElementById("force-plot").src = "data:image/png;base64," + result.shap_plots.force_plot;
-            } else {
-                resultDiv.textContent = `Error: ${result.error || "Unknown error"}`;
+                    // Set SHAP plots
+                    document.getElementById("summary-plot").src = "data:image/png;base64," + result.shap_plots.summary_plot;
+                    document.getElementById("force-plot").src = "data:image/png;base64," + result.shap_plots.force_plot;
+                } else {
+                    resultDiv.textContent = `Error: ${result.error || "Unknown error"}`;
+                    resultDiv.style.display = "block";
+                    resultDiv.classList.replace("alert-info", "alert-danger");
+                }
+            } catch (error) {
+                resultDiv.textContent = `An exception occurred: ${error.message}`;
                 resultDiv.style.display = "block";
                 resultDiv.classList.replace("alert-info", "alert-danger");
             }
-        } catch (error) {
-            resultDiv.textContent = `An exception occurred: ${error.message}`;
-            resultDiv.style.display = "block";
-            resultDiv.classList.replace("alert-info", "alert-danger");
-        }
-    });
+        });
 </script>
 
 <div id="credit-risk-result" class="alert alert-info mt-3" style="display: none;"></div>
